@@ -1,0 +1,44 @@
+<!doctype html>
+<html class="no-js">
+<head>
+  <meta charset="utf-8">
+  <title>Image Widgets Example</title>
+  <meta name="viewport" content="width=device-width">
+  <style>
+  </style>
+  <link rel="stylesheet" href="images.css">
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/momentjs/moment.js"></script>
+  <script src="client.js"></script>
+  <script src="date.js"></script>
+  <script src="images.js"></script>
+</head>
+<body ng-app="exampleApp">
+    <image-body image="image" settings="settings" names="names">
+    </image-body>
+
+    <script type="text/javascript">
+        var datasets = [];
+
+        function sink(dataset) {
+            datasets.push(dataset);
+        }
+
+        angular.module('exampleApp', ['kubernetesUI.images'])
+	    .run(function($rootScope) {
+                $rootScope.image = datasets[0];
+
+                $rootScope.settings = {
+                    registry: {
+                    }
+                };
+
+                $rootScope.names = [
+                    "blah/blah",
+                ];
+            });
+
+    </script>
+    <script type="text/javascript" src="tests/image.jsonp"></script>
+</body>
+</html>
