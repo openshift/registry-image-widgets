@@ -1,3 +1,5 @@
+/* globals moment */
+
 (function() {
 
 angular.module('kubernetesUI.date', [])

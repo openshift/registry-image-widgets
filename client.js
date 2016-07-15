@@ -20,8 +20,8 @@
 angular.module('kubernetesUI.client', [ ])
 
 .factory('WeakMap', function() {
-    if (typeof WeakMap === 'function')
-        return WeakMap;
+    if (typeof window.WeakMap === 'function')
+        return window.WeakMap;
 
     /*
      * A WeakMap implementation
