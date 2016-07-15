@@ -16,10 +16,12 @@ module.exports = {
             srcdir + "images.js",
             srcdir + "client.js",
             srcdir + "date.js",
+            srcdir + "layers.js",
             srcdir + "images.css",
             srcdir + "views/image-body.html",
             srcdir + "views/image-config.html",
             srcdir + "views/image-meta.html",
+            srcdir + "views/image-layers.html",
         ]
     },
     externals: {

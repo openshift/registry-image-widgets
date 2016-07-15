@@ -44,17 +44,23 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(1);
-	__webpack_require__(2);
-	__webpack_require__(3);
 	__webpack_require__(4);
+	__webpack_require__(5);
+	__webpack_require__(6);
+	__webpack_require__(7);
 	__webpack_require__(8);
-	__webpack_require__(9);
-	module.exports = __webpack_require__(10);
+	__webpack_require__(10);
+	__webpack_require__(11);
+	__webpack_require__(12);
+	__webpack_require__(13);
+	module.exports = __webpack_require__(14);
 
 
 /***/ },
-/* 1 */
+/* 1 */,
+/* 2 */,
+/* 3 */,
+/* 4 */
 /***/ function(module, exports) {
 
 	/*
@@ -238,7 +244,7 @@
 
 
 /***/ },
-/* 2 */
+/* 5 */
 /***/ function(module, exports) {
 
 	/*
@@ -330,7 +336,7 @@
 
 
 /***/ },
-/* 3 */
+/* 6 */
 /***/ function(module, exports) {
 
 	/* globals moment */
@@ -388,16 +394,143 @@
 
 
 /***/ },
-/* 4 */
+/* 7 */
+/***/ function(module, exports) {
+
+	/*
+	 * This file is part of Cockpit.
+	 *
+	 * Copyright (C) 2016 Red Hat, Inc.
+	 *
+	 * Cockpit is free software; you can redistribute it and/or modify it
+	 * under the terms of the GNU Lesser General Public License as published by
+	 * the Free Software Foundation; either version 2.1 of the License, or
+	 * (at your option) any later version.
+	 *
+	 * Cockpit is distributed in the hope that it will be useful, but
+	 * WITHOUT ANY WARRANTY; without even the implied warranty of
+	 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+	 * Lesser General Public License for more details.
+	 *
+	 * You should have received a copy of the GNU Lesser General Public License
+	 * along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
+	 */
+	
+	/* globals cockpit */
+	
+	(function() {
+	    "use strict";
+	
+	    function v1CompatibilityLabel(layer, lower) {
+	        var cmd, last;
+	        if (layer.v1Compatibility.container_config) {
+	            cmd = layer.v1Compatibility.container_config.Cmd;
+	            if (cmd) {
+	                last = cmd[cmd.length - 1];
+	                if (last.indexOf("#(nop)") === 0)
+	                    return last.substring(6).trim();
+	                else if (cmd.length == 1 && cmd[0].indexOf("/bin/sh -c #(nop)") === 0)
+	                    return cmd[0].substring(17).trim();
+	                else
+	                    return cmd.join(" ");
+	            }
+	        }
+	
+	        return layer.v1Compatibility.id;
+	    }
+	
+	    function prepareLayer(layer, index, layers) {
+	        var result;
+	        /* DockerImageManifest */
+	        if (layer.v1Compatibility) {
+	            result = {
+	                id: layer.v1Compatibility.id,
+	                size: layer.v1Compatibility.Size || 0,
+	                label: v1CompatibilityLabel(layer, layers[index + 1])
+	            };
+	
+	        /* DockerImageLayers */
+	        } else if (layer.name && layer.size) {
+	            result = {
+	                id: layer.name,
+	                size: layer.size || 0,
+	                label: layer.name,
+	            };
+	
+	        /* Unsupported layer type */
+	        } else {
+	            result = {
+	                size: 0,
+	                id: index,
+	                label: "Unknown layer",
+	            };
+	        }
+	
+	        /* Some hints for coloring the display */
+	        if (result.label.indexOf("RUN ") === 0)
+	            result.hint = "run";
+	        else if (result.label.indexOf("ADD ") === 0 || result.size > 8192)
+	            result.hint = "add";
+	        else
+	            result.hint = "other";
+	
+	        return result;
+	    }
+	
+	    angular.module('kubernetesUI.images')
+	
+	    .directive('imageLayers', [
+	        'imageLayers',
+	        function(imageLayers) {
+	            return {
+	                restrict: 'E',
+	                scope: {
+	                    image: '=',
+	                    data: '=?layers',
+	                },
+	                templateUrl: 'views/image-layers.html',
+	                link: function($scope, element, attributes) {
+	                    $scope.formatSize = function(bytes) {
+	                        if (!bytes)
+	                            return "";
+	                        else if (bytes > 1024 && typeof cockpit != "undefined")
+	                            return cockpit.format_bytes(bytes);
+	                        else
+	                            return bytes + " B";
+	                    };
+	
+	                    $scope.$watch('data', function(layers) {
+	                        if (layers && layers.length)
+	                            layers = layers.map(prepareLayer).reverse();
+	                        $scope.layers = layers;
+	                    });
+	
+	                    $scope.$watch('image', function(image) {
+	                        $scope.data = imageLayers(image);
+	                    });
+	                }
+	            };
+	        }
+	    ]);
+	
+	}());
+
+
+/***/ },
+/* 8 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 
 /***/ },
-/* 5 */,
-/* 6 */,
-/* 7 */,
-/* 8 */
+/* 9 */,
+/* 10 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+
+/***/ },
+/* 11 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -408,7 +541,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 9 */
+/* 12 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -419,7 +552,7 @@
 	module.exports=v1;
 
 /***/ },
-/* 10 */
+/* 13 */
 /***/ function(module, exports) {
 
 	var angular=window.angular,ngModule;
@@ -427,6 +560,17 @@
 	catch(e){ngModule=angular.module("ng",[])}
 	var v1="<div> <dl> <dt ng-if=\"labels\" translatable=\"yes\">Labels</dt> <dd ng-repeat=\"(name, value) in labels\" ng-show=\"name != 'description' && name != 'name'\"> <tt>{{name}}={{value}}</tt> </dd> <dt ng-if=\"config.OnBuild.length\" translatable=\"yes\">On Build</dt> <dd ng-repeat=\"line in config.OnBuild\"><tt>{{line}}</tt></dd> <dt ng-if=\"image.metadata.annotations\" translatable=\"yes\">Annotations</dt> <dd ng-repeat=\"(name, value) in image.metadata.annotations\">{{name}}: {{value}}</dd> <dt translatable=\"yes\">Docker Version</dt> <dd>{{image.dockerImageMetadata.DockerVersion}}</dd> </dl> <div ng-if=\"layers.length\" class=\"image-metadata-layers\"> <p>{{ layers.length }} <span translatable=\"yes\">Image Layers</span></p> <image-layers layers=\"layers\"> </image-layers> </div> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("image-widgets/views/image-meta.html",v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 14 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<ul class=\"image-layers\"> <li ng-repeat=\"layer in layers\" class=\"hint-{{ layer.hint }}\"> <span title=\"{{ layer.size }}\">{{ formatSize(layer.size) }}</span> <p>{{ layer.label}}</p> </li> </ul>";
+	ngModule.run(["$templateCache",function(c){c.put("image-widgets/views/image-layers.html",v1)}]);
 	module.exports=v1;
 
 /***/ }
