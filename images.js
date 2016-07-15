@@ -156,13 +156,23 @@ angular.module('kubernetesUI.images', [
     }
 ])
 
-.directive('imageMeta',
-    function() {
+.directive('imageMeta', [
+    'imageDockerConfig',
+    function(imageDockerConfig) {
         return {
             restrict: 'E',
-            templateUrl: 'views/image-meta.html'
+            scope: {
+                image: '=',
+            },
+            templateUrl: 'views/image-meta.html',
+            link: function(scope, element, attrs) {
+                scope.$watch("image", function(image) {
+                    scope.config = imageDockerConfig(image);
+                    scope.labels = scope.config.Labels || { };
+                });
+            }
         };
     }
-);
+]);
 
 }());
