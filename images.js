@@ -138,14 +138,23 @@ angular.module('kubernetesUI.images', [
     }
 ])
 
-.directive('imageConfig',
-    function() {
+.directive('imageConfig', [
+    'imageDockerConfig',
+    function(imageDockerConfig) {
         return {
             restrict: 'E',
-            templateUrl: 'views/image-config.html'
+            scope: {
+                image: '=',
+            },
+            templateUrl: 'views/image-config.html',
+            link: function(scope, element, attrs) {
+                scope.$watch("image", function(image) {
+                    scope.config = imageDockerConfig(image);
+                });
+            }
         };
     }
-)
+])
 
 .directive('imageMeta',
     function() {
