@@ -14,6 +14,8 @@
     "grunt-contrib-uglify": "*",
     "grunt-run": "*",
     "jshint-loader": "*",
+    "less-loader": "~2.2.3",
+    "less": "~2.7.1",
     "ng-cache-loader": "0.0.16",
     "promise": "*",
     "raw-loader": "*",

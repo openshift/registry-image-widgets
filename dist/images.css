@@ -1,2 +1,99 @@
+dl.image-tags dt {
+  line-height: 30px;
+}
+dl.image-tags .image-tag {
+  padding: 2px 5px;
+  line-height: 30px;
+}
+dl.image-tags .image-tag:after {
+  content: 'a';
+  white-space: pre;
+}
+pre {
+  font-size: 13px;
+  padding: 5px 10px;
+  background-color: #eee;
+  border: none;
+  font-family: Monospace, Menlo, Consolas;
+}
+pre em,
+pre span.placeholder {
+  font-weight: bold;
+  font-style: normal;
+}
+.fa-info-circle {
+  font-size: 15px;
+  color: #888;
+  padding: 0px 5px;
+}
+.image-metadata-layers {
+  padding-top: 15px;
+  clear: both;
+}
+.image-metadata-layers p {
+  margin-bottom: 3px;
+}
+image-layers {
+  border: 1px solid #d1d1d1;
+  display: block;
+  overflow-y: auto;
+  max-height: 200px;
+}
+ul.image-layers {
+  list-style: none;
+  background-image: -webkit-linear-gradient(top, #fff 12px, #d3d3d3 15px);
+  background-image: -moz-linear-gradient(top, #fff 12px, #d3d3d3 15px);
+  background-image: -o-linear-gradient(top, #fff 12px, #d3d3d3 15px);
+  background-image: linear-gradient(top, #fff 12px, #d3d3d3 15px);
+  background-size: 2px 100%;
+  background-repeat: no-repeat;
+  margin: 8px 10px 15px 15px;
+  padding-left: 0px;
+  font-size: 13px;
+}
+ul.image-layers li {
+  clear: both;
+}
+ul.image-layers li:before {
+  content: "\F111";
+  /* circle */
+  font-family: FontAwesome;
+  font-size: 19px;
+  line-height: 19px;
+  float: left;
+  display: block;
+  color: #0099ff;
+  position: relative;
+  left: -7px;
+  top: 1px;
+  padding-bottom: 9px;
+}
+ul.image-layers li.hint-add:before {
+  color: #555753;
+}
+ul.image-layers li.hint-run:before {
+  color: #4e9a06;
+}
+ul.image-layers li:first-child:before {
+  content: "\F0AB";
+  /* fa-circle-arrow */
+}
+ul.image-layers li:last-child:before {
+  top: 2px;
+  background-color: white;
+}
+ul.image-layers span {
+  display: block;
+  float: right;
+}
+ul.image-layers p {
+  font-family: monospace;
+  margin-bottom: 0px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 15px;
+  white-space: nowrap;
+  font-size: 12px;
+}
 
 /*# sourceMappingURL=images.css.map*/

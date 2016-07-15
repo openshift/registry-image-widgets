@@ -17,7 +17,8 @@ module.exports = {
             srcdir + "client.js",
             srcdir + "date.js",
             srcdir + "layers.js",
-            srcdir + "images.css",
+            srcdir + "images.less",
+            srcdir + "layers.less",
             srcdir + "views/image-body.html",
             srcdir + "views/image-config.html",
             srcdir + "views/image-meta.html",
@@ -48,7 +49,7 @@ module.exports = {
         sourceMapFilename: "[file].map",
     },
     resolve: {
-        modulesDirectories: [ srcdir + path.sep + "lib" ]
+        modulesDirectories: [ srcdir + path.sep + "bower_components" ]
     },
     resolveLoader: {
         root: path.resolve(srcdir, 'node_modules')
@@ -69,6 +70,10 @@ module.exports = {
             {
                 test: /\.css$/,
                 loader: extract.extract("style-loader", "css-loader")
+            },
+            {
+                test: /\.less$/,
+                loader: extract.extract('css?sourceMap!' + 'less?sourceMap')
             },
             {
                 test: /\.html$/,
