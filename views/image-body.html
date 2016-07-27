@@ -13,10 +13,10 @@
     <dd ng-if="config.author">{{config.author}}</dd>
     <dd ng-if="!config.author && image.dockerImageMetadata.Author">{{image.dockerImageMetadata.Author}}</dd>
     <dd ng-if="!config.author && !image.dockerImageMetadata.Author"><em translatable="yes">Unknown</em></dd>
-    <dt ng-if="labels['build-date'] || layers[0].v1Compatibility.created" translatable="yes">Built</dt>
+    <dt ng-if="labels['build-date'] || layers[0].v1Compatibility.created || image.dockerImageMetadata.Created" translatable="yes">Built</dt>
     <dd ng-if="labels['build-date']" title="{{labels['build-date']}}">{{ labels['build-date'] | dateRelative}}</dd>
-    <dd ng-if="!labels['build-date'] && layers[0].v1Compatibility.created" title="{{layers[0].v1Compatibility.created}}">{{ layer.v1Compatibility.created | dateRelative}}</dd>
-    <dd ng-if="!labels['build-date'] && !layers[0].v1Compatibility.created" title="{{image.dockerImageMetadata.Created}}">{{image.dockerImageMetadata.Created | dateRelative}}</dd>
+    <dd ng-if="!labels['build-date'] && layers[0].v1Compatibility.created" title="{{layers[0].v1Compatibility.created}}">{{ layers[0].v1Compatibility.created | dateRelative}}</dd>
+    <dd ng-if="!labels['build-date'] && !layers[0].v1Compatibility.created && image.dockerImageMetadata.Created" title="{{image.dockerImageMetadata.Created}}">{{image.dockerImageMetadata.Created | dateRelative}}</dd>
     <dt translatable="yes">Digest</dt>
     <dd><tt>{{ image.metadata.name }}</tt></dd>
     <dt translatable="yes">Identifier</dt>
