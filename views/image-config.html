@@ -1,6 +1,6 @@
 <pre>{{ configCommand(config) }}</pre>
 <div class="row">
-    <dl class="col-xs-12 col-sm-12 col-md-4">
+    <dl class="col-xs-12 col-sm-12 col-md-4 dl-horizontal">
         <dt translatable="yes">Run as</dt>
         <dd ng-if="config.User">{{config.User}}</dd>
         <dd ng-if="!config.User"><em translatable="yes">Default</em></dd>
@@ -13,18 +13,18 @@
         <dd ng-if="config.architecture">{{config.architecture}}</dd>
         <dd ng-if="!config.architecture">{{image.dockerImageMetadata.Architecture}}</dd>
     </dl>
-    <dl class="col-xs-12 col-sm-12 col-md-8 full-width">
+    <dl class="col-xs-12 col-sm-12 col-md-8 dl-horizontal full-width">
         <dt ng-if="config.Env.length" translatable="yes">Environment</dt>
         <dd ng-repeat="env in config.Env"><tt>{{env}}</tt></dd>
     </dl>
 </div>
 <div class="row">
-    <dl class="col-xs-12 col-sm-12 col-md-4">
+    <dl class="col-xs-12 col-sm-12 col-md-4 dl-horizontal">
         <dt translatable="yes">Ports</dt>
         <dd ng-repeat="(port, data) in config.ExposedPorts">{{port}}</dd>
         <dd ng-if="!config.ExposedPorts"><em translatable="yes">None</em></dd>
     </dl>
-    <dl class="col-xs-12 col-sm-12 col-md-8 full-width">
+    <dl class="col-xs-12 col-sm-12 col-md-8 dl-horizontal full-width">
         <dt ng-if="config.Volumes" translatable="yes">Volumes</dt>
         <dd ng-repeat="(volume, data) in config.Volumes">{{volume}}</dd>
     </dl>
