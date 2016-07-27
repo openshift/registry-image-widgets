@@ -11,10 +11,4 @@
         <dt translatable="yes">Docker Version</dt>
         <dd>{{image.dockerImageMetadata.DockerVersion}}</dd>
     </dl>
-
-    <div ng-if="layers.length" class="image-metadata-layers">
-        <p>{{ layers.length }} <span translatable="yes">Image Layers</span></p>
-        <image-layers layers="layers">
-        </image-layers>
-    </div>
 </div>
