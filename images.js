@@ -162,6 +162,21 @@ angular.module('kubernetesUI.images', [
             },
             templateUrl: 'kubernetes-image-widgets/views/image-config.html',
             link: function(scope, element, attrs) {
+                scope.configCommand = function configCommand(config) {
+                    var result = [ ];
+                    if (!config)
+                        return "";
+                    if (config.Entrypoint)
+                        result.push.apply(result, config.Entrypoint);
+                    if (config.Cmd)
+                        result.push.apply(result, config.Cmd);
+                    var string = result.join(" ");
+                    if (config.User && config.User.split(":")[0] != "root")
+                        return "$ " + string;
+                    else
+                        return "# " + string;
+                };
+
                 scope.$watch("image", function(image) {
                     scope.config = imageDockerConfig(image);
                 });
