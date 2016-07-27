@@ -527,6 +527,8 @@
 	                            return "";
 	                        else if (bytes > 1024 && typeof cockpit != "undefined")
 	                            return cockpit.format_bytes(bytes);
+	                        else if (bytes > 1024 * 1024)
+	                            return (bytes / (1024 * 1024)).toFixed(1) + " MB";
 	                        else
 	                            return bytes + " B";
 	                    };
