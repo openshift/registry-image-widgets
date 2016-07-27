@@ -123,7 +123,6 @@ angular.module('kubernetesUI.images', [
             restrict: 'E',
             scope: {
                 image: '=',
-                settings: '=',
                 names: '=',
             },
             templateUrl: 'kubernetes-image-widgets/views/image-body.html',
@@ -134,6 +133,19 @@ angular.module('kubernetesUI.images', [
                     scope.labels = scope.config.Labels || { };
                 });
             }
+        };
+    }
+])
+
+.directive('imagePull', [
+    function() {
+        return {
+            restrict: 'E',
+            scope: {
+                settings: '=',
+                names: '=',
+            },
+            templateUrl: 'kubernetes-image-widgets/views/image-pull.html'
         };
     }
 ])

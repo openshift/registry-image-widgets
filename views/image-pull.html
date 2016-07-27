@@ -1,0 +1,9 @@
+<div ng-if="names">
+    <p>
+        <i class="fa fa-info-circle"></i>
+        <span translatable="yes">To pull this image:</span>
+    </p>
+
+    <pre ng-if="!settings.registry.host">$ sudo docker pull <span ng-class="placeholder">registry</span>/{{names[0]}}</pre>
+    <pre ng-if="settings.registry.host">$ sudo docker pull <span>{{settings.registry.host}}</span>/{{names[0]}}</pre>
+</div>

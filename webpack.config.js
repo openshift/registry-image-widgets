@@ -23,6 +23,7 @@ module.exports = {
             srcdir + "views/image-config.html",
             srcdir + "views/image-meta.html",
             srcdir + "views/image-layers.html",
+            srcdir + "views/image-pull.html",
         ]
     },
     externals: {
