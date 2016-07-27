@@ -126,7 +126,7 @@ angular.module('kubernetesUI.images', [
                 settings: '=',
                 names: '=',
             },
-            templateUrl: 'views/image-body.html',
+            templateUrl: 'kubernetes-image-widgets/views/image-body.html',
             link: function(scope, element, attrs) {
                 scope.$watch("image", function(image) {
                     scope.layers = imageLayers(image);
@@ -146,7 +146,7 @@ angular.module('kubernetesUI.images', [
             scope: {
                 image: '=',
             },
-            templateUrl: 'views/image-config.html',
+            templateUrl: 'kubernetes-image-widgets/views/image-config.html',
             link: function(scope, element, attrs) {
                 scope.$watch("image", function(image) {
                     scope.config = imageDockerConfig(image);
@@ -164,7 +164,7 @@ angular.module('kubernetesUI.images', [
             scope: {
                 image: '=',
             },
-            templateUrl: 'views/image-meta.html',
+            templateUrl: 'kubernetes-image-widgets/views/image-meta.html',
             link: function(scope, element, attrs) {
                 scope.$watch("image", function(image) {
                     scope.config = imageDockerConfig(image);

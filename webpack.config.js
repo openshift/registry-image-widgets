@@ -77,7 +77,7 @@ module.exports = {
             },
             {
                 test: /\.html$/,
-                loader: "ng-cache?prefix=[dir]/[dir]"
+                loader: "ng-cache?prefix=kubernetes-image-widgets/[dir]"
             }
         ]
     },

@@ -89,7 +89,7 @@
                     image: '=',
                     data: '=?layers',
                 },
-                templateUrl: 'views/image-layers.html',
+                templateUrl: 'kubernetes-image-widgets/views/image-layers.html',
                 link: function($scope, element, attributes) {
                     $scope.formatSize = function(bytes) {
                         if (!bytes)
