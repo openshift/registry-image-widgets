@@ -612,7 +612,7 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div ng-if=\"names\"> <p> <i class=\"fa fa-info-circle\"></i>\n<span translatable=\"yes\">To pull this image:</span> </p> <pre ng-if=\"!settings.registry.host\">$ sudo docker pull <span ng-class=\"placeholder\">registry</span>/{{names[0]}}</pre> <pre ng-if=\"settings.registry.host\">$ sudo docker pull <span>{{settings.registry.host}}</span>/{{names[0]}}</pre> </div>";
+	var v1="<div ng-if=\"names\" class=\"image-pull\"> <p> <i class=\"fa fa-info-circle\"></i>\n<span translatable=\"yes\">To pull this image:</span> </p> <code ng-if=\"!settings.registry.host\">$ sudo docker pull <span ng-class=\"placeholder\">registry</span>/{{names[0]}}</code>\n<code ng-if=\"settings.registry.host\">$ sudo docker pull <span>{{settings.registry.host}}</span>/{{names[0]}}</code> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("kubernetes-image-widgets/views/image-pull.html",v1)}]);
 	module.exports=v1;
 

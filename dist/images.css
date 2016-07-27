@@ -9,15 +9,8 @@ dl.image-tags .image-tag:after {
   content: 'a';
   white-space: pre;
 }
-pre {
-  font-size: 13px;
-  padding: 5px 10px;
-  background-color: #eee;
-  border: none;
-  font-family: Monospace, Menlo, Consolas;
-}
-pre em,
-pre span.placeholder {
+.image-pull code em,
+.image-pull code span.placeholder {
   font-weight: bold;
   font-style: normal;
 }
