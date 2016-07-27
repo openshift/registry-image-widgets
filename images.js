@@ -130,7 +130,9 @@ angular.module('kubernetesUI.images', [
                 scope.$watch("image", function(image) {
                     scope.layers = imageLayers(image);
                     scope.config = imageDockerConfig(image);
-                    scope.labels = scope.config.Labels || { };
+                    scope.labels = scope.config.Labels;
+                    if (angular.equals({ }, scope.labels))
+                        scope.labels = null;
                 });
             }
         };
@@ -180,7 +182,9 @@ angular.module('kubernetesUI.images', [
             link: function(scope, element, attrs) {
                 scope.$watch("image", function(image) {
                     scope.config = imageDockerConfig(image);
-                    scope.labels = scope.config.Labels || { };
+                    scope.labels = scope.config.Labels;
+                    if (angular.equals({ }, scope.labels))
+                        scope.labels = null;
                 });
             }
         };
