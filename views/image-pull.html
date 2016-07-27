@@ -4,6 +4,6 @@
         <span translatable="yes">To pull this image:</span>
     </p>
 
-    <code ng-if="!settings.registry.host">$ sudo docker pull <span ng-class="placeholder">registry</span>/{{names[0]}}</code>
+    <code ng-if="!settings.registry.host">$ sudo docker pull <span class="placeholder">registry</span>/{{names[0]}}</code>
     <code ng-if="settings.registry.host">$ sudo docker pull <span>{{settings.registry.host}}</span>/{{names[0]}}</code>
 </div>
