@@ -111,6 +111,8 @@
 	        var weak = new WeakMap();
 	
 	        return function imageDockerManifest(image) {
+	            if (!image)
+	                return { };
 	            var manifest = weak.get(image);
 	            if (!manifest) {
 	                manifest = JSON.parse(image.dockerImageManifest || "{ }");
@@ -131,6 +133,8 @@
 	    function(WeakMap, imageLayers) {
 	        var weak = new WeakMap();
 	        return function imageDockerConfig(image) {
+	            if (!image)
+	                return { };
 	            var meta, layers, compat, config = weak.get(image);
 	            if (!config) {
 	                layers = imageLayers(image);
@@ -156,6 +160,8 @@
 	    function(WeakMap, imageDockerManifest) {
 	        var weak = new WeakMap();
 	        return function imageLayers(image) {
+	            if (!image)
+	                return [];
 	            var manifest, layers = weak.get(image);
 	            if (!layers) {
 	                manifest = imageDockerManifest(image);
