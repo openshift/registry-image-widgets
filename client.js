@@ -17,7 +17,7 @@
  * along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
  */
 
-angular.module('kubernetesUI.client', [ ])
+angular.module('registryUI.client', [ ])
 
 .factory('WeakMap', function() {
     if (typeof window.WeakMap === 'function')

@@ -1,6 +1,6 @@
 {
   "description": "This is just use to pull devel dependencies",
-  "name": "kubernetes-image-widgets",
+  "name": "registry-image-widgets",
   "private": true,
   "devDependencies": {
     "bower": "*",

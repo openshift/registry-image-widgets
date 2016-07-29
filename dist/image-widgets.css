@@ -1,39 +1,32 @@
-dl.image-tags dt {
+dl.registry-image-tags dt {
   line-height: 30px;
 }
-dl.image-tags .image-tag {
+dl.registry-image-tags .registry-image-tag {
   padding: 2px 5px;
   line-height: 30px;
 }
-dl.image-tags .image-tag:after {
+dl.registry-image-tags .registry-image-tag:after {
   content: 'a';
   white-space: pre;
 }
-.image-pull code em,
-.image-pull code span.placeholder {
+.registry-image-pull code em,
+.registry-image-pull code span.placeholder {
   font-weight: bold;
   font-style: normal;
   color: #888;
 }
-.fa-info-circle {
+.registry-image-pull .fa-info-circle {
   font-size: 15px;
   color: #888;
   padding: 0px 5px;
 }
-.image-metadata-layers {
-  padding-top: 15px;
-  clear: both;
-}
-.image-metadata-layers p {
-  margin-bottom: 3px;
-}
-image-layers {
+registry-image-layers {
   border: 1px solid #d1d1d1;
   display: block;
   overflow-y: auto;
   max-height: 200px;
 }
-ul.image-layers {
+ul.registry-image-layers {
   list-style: none;
   background-image: -webkit-linear-gradient(top, #fff 12px, #d3d3d3 15px);
   background-image: -moz-linear-gradient(top, #fff 12px, #d3d3d3 15px);
@@ -45,10 +38,10 @@ ul.image-layers {
   padding-left: 0px;
   font-size: 13px;
 }
-ul.image-layers li {
+ul.registry-image-layers li {
   clear: both;
 }
-ul.image-layers li:before {
+ul.registry-image-layers li:before {
   content: "\F111";
   /* circle */
   font-family: FontAwesome;
@@ -62,25 +55,25 @@ ul.image-layers li:before {
   top: 1px;
   padding-bottom: 9px;
 }
-ul.image-layers li.hint-add:before {
+ul.registry-image-layers li.hint-add:before {
   color: #555753;
 }
-ul.image-layers li.hint-run:before {
+ul.registry-image-layers li.hint-run:before {
   color: #4e9a06;
 }
-ul.image-layers li:first-child:before {
+ul.registry-image-layers li:first-child:before {
   content: "\F0AB";
   /* fa-circle-arrow */
 }
-ul.image-layers li:last-child:before {
+ul.registry-image-layers li:last-child:before {
   top: 2px;
   background-color: white;
 }
-ul.image-layers span {
+ul.registry-image-layers span {
   display: block;
   float: right;
 }
-ul.image-layers p {
+ul.registry-image-layers p {
   font-family: monospace;
   margin-bottom: 0px;
   overflow: hidden;
@@ -90,4 +83,4 @@ ul.image-layers p {
   font-size: 12px;
 }
 
-/*# sourceMappingURL=images.css.map*/
+/*# sourceMappingURL=image-widgets.css.map*/

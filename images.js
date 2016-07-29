@@ -34,9 +34,9 @@ function imagestreamEachTagItem(stream, callback, context) {
     }
 }
 
-angular.module('kubernetesUI.images', [
-    'kubernetesUI.client',
-    'kubernetesUI.date',
+angular.module('registryUI.images', [
+    'registryUI.client',
+    'registryUI.date',
 ])
 
 .factory('imageDockerManifest', [
@@ -112,16 +112,7 @@ angular.module('kubernetesUI.images', [
     }
 ])
 
-/*
-* image
-* labels
-* config
-* layers
-* names
-* settings
-*/
-
-.directive('imageBody', [
+.directive('registryImageBody', [
     'imageLayers',
     'imageDockerConfig',
     function(imageLayers, imageDockerConfig) {
@@ -131,7 +122,7 @@ angular.module('kubernetesUI.images', [
                 image: '=',
                 names: '=',
             },
-            templateUrl: 'kubernetes-image-widgets/views/image-body.html',
+            templateUrl: 'registry-image-widgets/views/image-body.html',
             link: function(scope, element, attrs) {
                 scope.$watch("image", function(image) {
                     scope.layers = imageLayers(image);
@@ -145,7 +136,7 @@ angular.module('kubernetesUI.images', [
     }
 ])
 
-.directive('imagePull', [
+.directive('registryImagePull', [
     function() {
         return {
             restrict: 'E',
@@ -153,12 +144,12 @@ angular.module('kubernetesUI.images', [
                 settings: '=',
                 names: '=',
             },
-            templateUrl: 'kubernetes-image-widgets/views/image-pull.html'
+            templateUrl: 'registry-image-widgets/views/image-pull.html'
         };
     }
 ])
 
-.directive('imageConfig', [
+.directive('registryImageConfig', [
     'imageDockerConfig',
     function(imageDockerConfig) {
         return {
@@ -166,7 +157,7 @@ angular.module('kubernetesUI.images', [
             scope: {
                 image: '=',
             },
-            templateUrl: 'kubernetes-image-widgets/views/image-config.html',
+            templateUrl: 'registry-image-widgets/views/image-config.html',
             link: function(scope, element, attrs) {
                 scope.configCommand = function configCommand(config) {
                     var result = [ ];
@@ -191,7 +182,7 @@ angular.module('kubernetesUI.images', [
     }
 ])
 
-.directive('imageMeta', [
+.directive('registryImageMeta', [
     'imageDockerConfig',
     function(imageDockerConfig) {
         return {
@@ -199,7 +190,7 @@ angular.module('kubernetesUI.images', [
             scope: {
                 image: '=',
             },
-            templateUrl: 'kubernetes-image-widgets/views/image-meta.html',
+            templateUrl: 'registry-image-widgets/views/image-meta.html',
             link: function(scope, element, attrs) {
                 scope.$watch("image", function(image) {
                     scope.config = imageDockerConfig(image);

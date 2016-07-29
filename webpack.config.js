@@ -12,7 +12,7 @@ var distdir = __dirname + path.sep + "dist" + path.sep;
 
 module.exports = {
     entry: {
-        "images": [
+        "image-widgets": [
             srcdir + "images.js",
             srcdir + "client.js",
             srcdir + "date.js",
@@ -78,7 +78,7 @@ module.exports = {
             },
             {
                 test: /\.html$/,
-                loader: "ng-cache?prefix=kubernetes-image-widgets/[dir]"
+                loader: "ng-cache?prefix=registry-image-widgets/[dir]"
             }
         ]
     },

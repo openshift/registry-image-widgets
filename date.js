@@ -2,7 +2,7 @@
 
 (function() {
 
-angular.module('kubernetesUI.date', [])
+angular.module('registryUI.date', [])
 
 .factory('dateRefreshMinute', [
     "$rootScope",

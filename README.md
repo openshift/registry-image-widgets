@@ -2,8 +2,8 @@ Registry Image Widgets
 ========================
 
 This provides rendering of Image and ImageStream objects as found in the
-Openshift Kubernetes distribution. As these types of objects make their
-way into upstream Kubernetes, we should provide the widgets here for
+Openshift Kubernetes distribution and related Registry. If these types of objects
+make their way into upstream Kubernetes, we should adapt the widgets here for
 rendering them.
 
 #### Disclaimer
@@ -12,12 +12,12 @@ This is an early implementation and is subject to change.
 Getting Started
 ---------------
 
-The image widgets are provided in the kubernetes-image-widgets bower package.
+The image widgets are provided in the registry-image-widgets bower package.
 
-To get the kubernetes-image-widgets bower component in another project, run:
+To get the registry-image-widgets bower component in another project, run:
 
 ```
-bower install kubernetes-image-widgets --save
+bower install registry-image-widgets --save
 ```
 
 To see a simple running example git clone this repo and run
@@ -38,22 +38,22 @@ Include the JS and CSS files, after angularjs and d3:
 ```xml
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/momentjs/moment.js"></script>
-<script src="bower_components/kubernetes-image-widgets/dist/images.js"></script>
-<link rel="stylesheet" href="bower_components/kubernetes-image-widgets/dist/images.css" />
+<script src="bower_components/registry-image-widgets/dist/images.js"></script>
+<link rel="stylesheet" href="bower_components/registry-image-widgets/dist/images.css" />
 ```
 
-Make sure your angular app / module includes ```kubernetesUI.images``` as a module dependency.
+Make sure your angular app / module includes ```registryUI.images``` as a module dependency.
 
 ```
-angular.module('exampleApp', ['kubernetesUI.images'])
+angular.module('exampleApp', ['registryUI.images'])
 ```
 
 Now include the terminal in your HTML. You must already have a pod resource, or a string
 URL in the current scope you pass to the terminal for its initialization.
 
 ```xml
-<image-body image="image_resource" names="names_array" settings="settings">
-</image-body>
+<registry-image-body image="image_resource" names="names_array" settings="settings">
+</registry-image-body>
 ```
 
 Documentation

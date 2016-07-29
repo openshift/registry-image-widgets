@@ -78,9 +78,9 @@
         return result;
     }
 
-    angular.module('kubernetesUI.images')
+    angular.module('registryUI.images')
 
-    .directive('imageLayers', [
+    .directive('registryImageLayers', [
         'imageLayers',
         function(imageLayers) {
             return {
@@ -89,7 +89,7 @@
                     image: '=',
                     data: '=?layers',
                 },
-                templateUrl: 'kubernetes-image-widgets/views/image-layers.html',
+                templateUrl: 'registry-image-widgets/views/image-layers.html',
                 link: function($scope, element, attributes) {
                     $scope.formatSize = function(bytes) {
                         if (!bytes)

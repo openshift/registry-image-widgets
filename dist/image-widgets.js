@@ -100,9 +100,9 @@
 	    }
 	}
 	
-	angular.module('kubernetesUI.images', [
-	    'kubernetesUI.client',
-	    'kubernetesUI.date',
+	angular.module('registryUI.images', [
+	    'registryUI.client',
+	    'registryUI.date',
 	])
 	
 	.factory('imageDockerManifest', [
@@ -178,16 +178,7 @@
 	    }
 	])
 	
-	/*
-	* image
-	* labels
-	* config
-	* layers
-	* names
-	* settings
-	*/
-	
-	.directive('imageBody', [
+	.directive('registryImageBody', [
 	    'imageLayers',
 	    'imageDockerConfig',
 	    function(imageLayers, imageDockerConfig) {
@@ -197,7 +188,7 @@
 	                image: '=',
 	                names: '=',
 	            },
-	            templateUrl: 'kubernetes-image-widgets/views/image-body.html',
+	            templateUrl: 'registry-image-widgets/views/image-body.html',
 	            link: function(scope, element, attrs) {
 	                scope.$watch("image", function(image) {
 	                    scope.layers = imageLayers(image);
@@ -211,7 +202,7 @@
 	    }
 	])
 	
-	.directive('imagePull', [
+	.directive('registryImagePull', [
 	    function() {
 	        return {
 	            restrict: 'E',
@@ -219,12 +210,12 @@
 	                settings: '=',
 	                names: '=',
 	            },
-	            templateUrl: 'kubernetes-image-widgets/views/image-pull.html'
+	            templateUrl: 'registry-image-widgets/views/image-pull.html'
 	        };
 	    }
 	])
 	
-	.directive('imageConfig', [
+	.directive('registryImageConfig', [
 	    'imageDockerConfig',
 	    function(imageDockerConfig) {
 	        return {
@@ -232,7 +223,7 @@
 	            scope: {
 	                image: '=',
 	            },
-	            templateUrl: 'kubernetes-image-widgets/views/image-config.html',
+	            templateUrl: 'registry-image-widgets/views/image-config.html',
 	            link: function(scope, element, attrs) {
 	                scope.configCommand = function configCommand(config) {
 	                    var result = [ ];
@@ -257,7 +248,7 @@
 	    }
 	])
 	
-	.directive('imageMeta', [
+	.directive('registryImageMeta', [
 	    'imageDockerConfig',
 	    function(imageDockerConfig) {
 	        return {
@@ -265,7 +256,7 @@
 	            scope: {
 	                image: '=',
 	            },
-	            templateUrl: 'kubernetes-image-widgets/views/image-meta.html',
+	            templateUrl: 'registry-image-widgets/views/image-meta.html',
 	            link: function(scope, element, attrs) {
 	                scope.$watch("image", function(image) {
 	                    scope.config = imageDockerConfig(image);
@@ -304,7 +295,7 @@
 	 * along with Cockpit; If not, see <http://www.gnu.org/licenses/>.
 	 */
 	
-	angular.module('kubernetesUI.client', [ ])
+	angular.module('registryUI.client', [ ])
 	
 	.factory('WeakMap', function() {
 	    if (typeof window.WeakMap === 'function')
@@ -381,7 +372,7 @@
 	
 	(function() {
 	
-	angular.module('kubernetesUI.date', [])
+	angular.module('registryUI.date', [])
 	
 	.factory('dateRefreshMinute', [
 	    "$rootScope",
@@ -515,9 +506,9 @@
 	        return result;
 	    }
 	
-	    angular.module('kubernetesUI.images')
+	    angular.module('registryUI.images')
 	
-	    .directive('imageLayers', [
+	    .directive('registryImageLayers', [
 	        'imageLayers',
 	        function(imageLayers) {
 	            return {
@@ -526,7 +517,7 @@
 	                    image: '=',
 	                    data: '=?layers',
 	                },
-	                templateUrl: 'kubernetes-image-widgets/views/image-layers.html',
+	                templateUrl: 'registry-image-widgets/views/image-layers.html',
 	                link: function($scope, element, attributes) {
 	                    $scope.formatSize = function(bytes) {
 	                        if (!bytes)
@@ -576,8 +567,8 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<dl class=\"dl-horizontal left\"> <dt ng-if=\"labels.name\" translatable=\"yes\">Name</dt> <dd ng-if=\"labels.name\">{{ labels.name }}</dd> <dt ng-if=\"labels.summary\" translatable=\"yes\">Summary</dt> <dd ng-if=\"labels.summary\">{{ labels.summary }}</dd> <dt ng-if=\"labels.description\" translatable=\"yes\">Description</dt> <dd ng-if=\"labels.description\">{{ labels.description }}</dd> <dt ng-if=\"labels.url\" translatable=\"yes\">Source URL</dt> <dd ng-if=\"labels.url\" translatable=\"yes\"> <a href=\"labels.url\"><i class=\"fa fa-external-link\"></i> {{ labels.url }}</a> </dd> <dt translatable=\"yes\">Author</dt> <dd ng-if=\"config.author\">{{config.author}}</dd> <dd ng-if=\"!config.author && image.dockerImageMetadata.Author\">{{image.dockerImageMetadata.Author}}</dd> <dd ng-if=\"!config.author && !image.dockerImageMetadata.Author\"><em translatable=\"yes\">Unknown</em></dd> <dt ng-if=\"labels['build-date'] || layers[0].v1Compatibility.created || image.dockerImageMetadata.Created\" translatable=\"yes\">Built</dt> <dd ng-if=\"labels['build-date']\" title=\"{{labels['build-date']}}\">{{ labels['build-date'] | dateRelative}}</dd> <dd ng-if=\"!labels['build-date'] && layers[0].v1Compatibility.created\" title=\"{{layers[0].v1Compatibility.created}}\">{{ layers[0].v1Compatibility.created | dateRelative}}</dd> <dd ng-if=\"!labels['build-date'] && !layers[0].v1Compatibility.created && image.dockerImageMetadata.Created\" title=\"{{image.dockerImageMetadata.Created}}\">{{image.dockerImageMetadata.Created | dateRelative}}</dd> <dt translatable=\"yes\">Digest</dt> <dd><tt>{{ image.metadata.name }}</tt></dd> <dt translatable=\"yes\">Identifier</dt> <dd><tt>{{ config.Image }}</tt></dd> </dl> <dl class=\"image-tags\" ng-if=\"names\"> <dt translatable=\"yes\">Tags</dt> <dd><span class=\"image-tag\" ng-repeat=\"name in names\">{{name}}</span></dd> </dl>";
-	ngModule.run(["$templateCache",function(c){c.put("kubernetes-image-widgets/views/image-body.html",v1)}]);
+	var v1="<dl class=\"dl-horizontal left\"> <dt ng-if=\"labels.name\" translatable=\"yes\">Name</dt> <dd ng-if=\"labels.name\">{{ labels.name }}</dd> <dt ng-if=\"labels.summary\" translatable=\"yes\">Summary</dt> <dd ng-if=\"labels.summary\">{{ labels.summary }}</dd> <dt ng-if=\"labels.description\" translatable=\"yes\">Description</dt> <dd ng-if=\"labels.description\">{{ labels.description }}</dd> <dt ng-if=\"labels.url\" translatable=\"yes\">Source URL</dt> <dd ng-if=\"labels.url\" translatable=\"yes\"> <a href=\"labels.url\"><i class=\"fa fa-external-link\"></i> {{ labels.url }}</a> </dd> <dt translatable=\"yes\">Author</dt> <dd ng-if=\"config.author\">{{config.author}}</dd> <dd ng-if=\"!config.author && image.dockerImageMetadata.Author\">{{image.dockerImageMetadata.Author}}</dd> <dd ng-if=\"!config.author && !image.dockerImageMetadata.Author\"><em translatable=\"yes\">Unknown</em></dd> <dt ng-if=\"labels['build-date'] || layers[0].v1Compatibility.created || image.dockerImageMetadata.Created\" translatable=\"yes\">Built</dt> <dd ng-if=\"labels['build-date']\" title=\"{{labels['build-date']}}\">{{ labels['build-date'] | dateRelative}}</dd> <dd ng-if=\"!labels['build-date'] && layers[0].v1Compatibility.created\" title=\"{{layers[0].v1Compatibility.created}}\">{{ layers[0].v1Compatibility.created | dateRelative}}</dd> <dd ng-if=\"!labels['build-date'] && !layers[0].v1Compatibility.created && image.dockerImageMetadata.Created\" title=\"{{image.dockerImageMetadata.Created}}\">{{image.dockerImageMetadata.Created | dateRelative}}</dd> <dt translatable=\"yes\">Digest</dt> <dd><tt>{{ image.metadata.name }}</tt></dd> <dt translatable=\"yes\">Identifier</dt> <dd><tt>{{ config.Image }}</tt></dd> </dl> <dl class=\"registry-image-tags\" ng-if=\"names\"> <dt translatable=\"yes\">Tags</dt> <dd><span class=\"registry-image-tag\" ng-repeat=\"name in names\">{{name}}</span></dd> </dl>";
+	ngModule.run(["$templateCache",function(c){c.put("registry-image-widgets/views/image-body.html",v1)}]);
 	module.exports=v1;
 
 /***/ },
@@ -588,7 +579,7 @@
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
 	var v1="<pre>{{ configCommand(config) }}</pre> <div class=\"row\"> <dl class=\"col-xs-12 col-sm-12 col-md-4 dl-horizontal\"> <dt translatable=\"yes\">Run as</dt> <dd ng-if=\"config.User\">{{config.User}}</dd> <dd ng-if=\"!config.User\"><em translatable=\"yes\">Default</em></dd> <dt translatable=\"yes\">Directory</dt> <dd ng-if=\"config.WorkingDir\">{{config.WorkingDir}}</dd> <dd ng-if=\"!config.WorkingDir\">/</dd> <dt ng-if=\"config.StopSignal\" translatable=\"yes\">Stop with</dt> <dd ng-if=\"config.StopSignal\">{{config.StopSignal}}</dd> <dt translatable=\"yes\">Architecture</dt> <dd ng-if=\"config.architecture\">{{config.architecture}}</dd> <dd ng-if=\"!config.architecture\">{{image.dockerImageMetadata.Architecture}}</dd> </dl> <dl class=\"col-xs-12 col-sm-12 col-md-8 dl-horizontal full-width\"> <dt ng-if=\"config.Env.length\" translatable=\"yes\">Environment</dt> <dd ng-repeat=\"env in config.Env\"><tt>{{env}}</tt></dd> </dl> </div> <div class=\"row\"> <dl class=\"col-xs-12 col-sm-12 col-md-4 dl-horizontal\"> <dt translatable=\"yes\">Ports</dt> <dd ng-repeat=\"(port, data) in config.ExposedPorts\">{{port}}</dd> <dd ng-if=\"!config.ExposedPorts\"><em translatable=\"yes\">None</em></dd> </dl> <dl class=\"col-xs-12 col-sm-12 col-md-8 dl-horizontal full-width\"> <dt ng-if=\"config.Volumes\" translatable=\"yes\">Volumes</dt> <dd ng-repeat=\"(volume, data) in config.Volumes\">{{volume}}</dd> </dl> </div>";
-	ngModule.run(["$templateCache",function(c){c.put("kubernetes-image-widgets/views/image-config.html",v1)}]);
+	ngModule.run(["$templateCache",function(c){c.put("registry-image-widgets/views/image-config.html",v1)}]);
 	module.exports=v1;
 
 /***/ },
@@ -599,7 +590,7 @@
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
 	var v1="<div> <dl class=\"dl-horizontal left\"> <dt ng-if=\"labels\" translatable=\"yes\">Labels</dt> <dd ng-repeat=\"(name, value) in labels\" ng-show=\"name != 'description' && name != 'name'\"> <tt>{{name}}={{value}}</tt> </dd> <dt ng-if=\"config.OnBuild.length\" translatable=\"yes\">On Build</dt> <dd ng-repeat=\"line in config.OnBuild\"><tt>{{line}}</tt></dd> <dt ng-if=\"image.metadata.annotations\" translatable=\"yes\">Annotations</dt> <dd ng-repeat=\"(name, value) in image.metadata.annotations\">{{name}}: {{value}}</dd> <dt translatable=\"yes\">Docker Version</dt> <dd>{{image.dockerImageMetadata.DockerVersion}}</dd> </dl> </div>";
-	ngModule.run(["$templateCache",function(c){c.put("kubernetes-image-widgets/views/image-meta.html",v1)}]);
+	ngModule.run(["$templateCache",function(c){c.put("registry-image-widgets/views/image-meta.html",v1)}]);
 	module.exports=v1;
 
 /***/ },
@@ -609,8 +600,8 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<ul class=\"image-layers\"> <li ng-repeat=\"layer in layers\" class=\"hint-{{ layer.hint }}\"> <span title=\"{{ layer.size }}\">{{ formatSize(layer.size) }}</span> <p>{{ layer.label}}</p> </li> </ul>";
-	ngModule.run(["$templateCache",function(c){c.put("kubernetes-image-widgets/views/image-layers.html",v1)}]);
+	var v1="<ul class=\"registry-image-layers\"> <li ng-repeat=\"layer in layers\" class=\"hint-{{ layer.hint }}\"> <span title=\"{{ layer.size }}\">{{ formatSize(layer.size) }}</span> <p>{{ layer.label}}</p> </li> </ul>";
+	ngModule.run(["$templateCache",function(c){c.put("registry-image-widgets/views/image-layers.html",v1)}]);
 	module.exports=v1;
 
 /***/ },
@@ -620,10 +611,10 @@
 	var angular=window.angular,ngModule;
 	try {ngModule=angular.module(["ng"])}
 	catch(e){ngModule=angular.module("ng",[])}
-	var v1="<div ng-if=\"names\" class=\"image-pull\"> <p> <i class=\"fa fa-info-circle\"></i>\n<span translatable=\"yes\">To pull this image:</span> </p> <code ng-if=\"!settings.registry.host\">$ sudo docker pull <span class=\"placeholder\">registry</span>/{{names[0]}}</code>\n<code ng-if=\"settings.registry.host\">$ sudo docker pull <span>{{settings.registry.host}}</span>/{{names[0]}}</code> </div>";
-	ngModule.run(["$templateCache",function(c){c.put("kubernetes-image-widgets/views/image-pull.html",v1)}]);
+	var v1="<div ng-if=\"names\" class=\"registry-image-pull\"> <p> <i class=\"fa fa-info-circle\"></i>\n<span translatable=\"yes\">To pull this image:</span> </p> <code ng-if=\"!settings.registry.host\">$ sudo docker pull <span class=\"placeholder\">registry</span>/{{names[0]}}</code>\n<code ng-if=\"settings.registry.host\">$ sudo docker pull <span>{{settings.registry.host}}</span>/{{names[0]}}</code> </div>";
+	ngModule.run(["$templateCache",function(c){c.put("registry-image-widgets/views/image-pull.html",v1)}]);
 	module.exports=v1;
 
 /***/ }
 /******/ ]);
-//# sourceMappingURL=images.js.map
+//# sourceMappingURL=image-widgets.js.map
