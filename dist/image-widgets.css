@@ -6,7 +6,7 @@ dl.registry-image-tags .registry-image-tag {
   line-height: 30px;
 }
 dl.registry-image-tags .registry-image-tag:after {
-  content: 'a';
+  content: ' ';
   white-space: pre;
 }
 .registry-image-pull code em,
