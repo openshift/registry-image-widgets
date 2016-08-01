@@ -21,7 +21,8 @@
     "/*.js",
     "node_modules",
     "bower_components",
-    "scratch"
+    "scratch",
+    "tests"
   ],
   "main": [
     "dist/image-widgets.js",
