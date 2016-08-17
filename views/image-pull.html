@@ -1,7 +1,7 @@
 <div ng-if="names" class="registry-image-pull">
     <p>
         <i class="fa fa-info-circle"></i>
-        <span translatable="yes">To pull this image:</span>
+        <span translate>To pull this image:</span>
     </p>
 
     <code ng-if="!settings.registry.host">$ sudo docker pull <span class="placeholder">registry</span>/{{names[0]}}</code>

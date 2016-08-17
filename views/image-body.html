@@ -1,29 +1,29 @@
 <dl class="dl-horizontal left">
-    <dt ng-if="labels.name" translatable="yes">Name</dt>
+    <dt ng-if="labels.name" translate>Name</dt>
     <dd ng-if="labels.name">{{ labels.name }}</dd>
-    <dt ng-if="labels.summary" translatable="yes">Summary</dt>
+    <dt ng-if="labels.summary" translate>Summary</dt>
     <dd ng-if="labels.summary">{{ labels.summary }}</dd>
-    <dt ng-if="labels.description" translatable="yes">Description</dt>
+    <dt ng-if="labels.description" translate>Description</dt>
     <dd ng-if="labels.description">{{ labels.description }}</dd>
-    <dt ng-if="labels.url" translatable="yes">Source URL</dt>
-    <dd ng-if="labels.url" translatable="yes">
+    <dt ng-if="labels.url" translate>Source URL</dt>
+    <dd ng-if="labels.url">
         <a href="labels.url"><i class="fa fa-external-link"></i> {{ labels.url }}</a>
     </dd>
-    <dt translatable="yes">Author</dt>
+    <dt translate>Author</dt>
     <dd ng-if="config.author">{{config.author}}</dd>
     <dd ng-if="!config.author && image.dockerImageMetadata.Author">{{image.dockerImageMetadata.Author}}</dd>
-    <dd ng-if="!config.author && !image.dockerImageMetadata.Author"><em translatable="yes">Unknown</em></dd>
-    <dt ng-if="labels['build-date'] || layers[0].v1Compatibility.created || image.dockerImageMetadata.Created" translatable="yes">Built</dt>
+    <dd ng-if="!config.author && !image.dockerImageMetadata.Author"><em translate>Unknown</em></dd>
+    <dt ng-if="labels['build-date'] || layers[0].v1Compatibility.created || image.dockerImageMetadata.Created" translate>Built</dt>
     <dd ng-if="labels['build-date']" title="{{labels['build-date']}}">{{ labels['build-date'] | dateRelative}}</dd>
     <dd ng-if="!labels['build-date'] && layers[0].v1Compatibility.created" title="{{layers[0].v1Compatibility.created}}">{{ layers[0].v1Compatibility.created | dateRelative}}</dd>
     <dd ng-if="!labels['build-date'] && !layers[0].v1Compatibility.created && image.dockerImageMetadata.Created" title="{{image.dockerImageMetadata.Created}}">{{image.dockerImageMetadata.Created | dateRelative}}</dd>
-    <dt translatable="yes">Digest</dt>
+    <dt translate>Digest</dt>
     <dd><tt>{{ image.metadata.name }}</tt></dd>
-    <dt translatable="yes">Identifier</dt>
+    <dt translate>Identifier</dt>
     <dd><tt>{{ config.Image }}</tt></dd>
 </dl>
 
 <dl class="registry-image-tags" ng-if="names">
-    <dt translatable="yes">Tags</dt>
+    <dt translate>Tags</dt>
     <dd><span class="registry-image-tag" ng-repeat="name in names">{{name}}</span></dd>
 </dl>

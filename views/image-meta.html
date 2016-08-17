@@ -1,14 +1,14 @@
 <div>
     <dl class="dl-horizontal left">
-        <dt ng-if="labels" translatable="yes">Labels</dt>
+        <dt ng-if="labels" translate>Labels</dt>
         <dd ng-repeat="(name, value) in labels" ng-show="name != 'description' && name != 'name'">
             <tt>{{name}}={{value}}</tt>
         </dd>
-        <dt ng-if="config.OnBuild.length" translatable="yes">On Build</dt>
+        <dt ng-if="config.OnBuild.length" translate>On Build</dt>
         <dd ng-repeat="line in config.OnBuild"><tt>{{line}}</tt></dd>
-        <dt ng-if="image.metadata.annotations" translatable="yes">Annotations</dt>
+        <dt ng-if="image.metadata.annotations" translate>Annotations</dt>
         <dd ng-repeat="(name, value) in image.metadata.annotations">{{name}}: {{value}}</dd>
-        <dt translatable="yes">Docker Version</dt>
+        <dt translate>Docker Version</dt>
         <dd>{{image.dockerImageMetadata.DockerVersion}}</dd>
     </dl>
 </div>
