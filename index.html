@@ -26,7 +26,7 @@
     </registry-image-meta>
 
     <h2>Image Layers</h2>
-    <registry-image-layers image="image">
+    <registry-image-layers layers="layers">
     </registry-image-layers>
 
     <script type="text/javascript">
@@ -37,8 +37,9 @@
         }
 
         angular.module('exampleApp', ['registryUI.images'])
-	    .run(function($rootScope) {
+	    .run(function($rootScope, imageLayers) {
                 $rootScope.image = datasets[0];
+                $rootScope.layers = imageLayers($rootScope.image);
 
                 $rootScope.settings = {
                     registry: {

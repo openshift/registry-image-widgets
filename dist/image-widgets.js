@@ -537,7 +537,9 @@
 	                    });
 	
 	                    $scope.$watch('image', function(image) {
-	                        $scope.data = imageLayers(image);
+	                        /* Only digest layers if image is set, or null */
+	                        if (!angular.isUndefined(image))
+	                            $scope.data = imageLayers(image);
 	                    });
 	                }
 	            };
