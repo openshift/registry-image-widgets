@@ -4,28 +4,34 @@
   <meta charset="utf-8">
   <title>Image Widgets Example</title>
   <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="https://www.patternfly.org/assets/css/patternfly-adjusted.min.css">
+  <link rel="stylesheet" href="https://www.patternfly.org/components/patternfly/dist/css/patternfly-additions.min.css">
   <link rel="stylesheet" href="dist/image-widgets.css">
+  <style>
+    body { margin: 20px; }
+  </style>
   <script src="bower_components/angular/angular.js"></script>
   <script src="bower_components/momentjs/moment.js"></script>
   <script src="dist/image-widgets.js"></script>
 </head>
 <body ng-app="exampleApp">
-    <h2>Image Body</h2>
+    <hr>
     <registry-image-body image="image" names="names">
     </registry-image-body>
 
+    <hr>
     <registry-image-pull settings="settings" names="names">
     </registry-image-pull>
 
-    <h2>Image Config</h2>
+    <hr>
     <registry-image-config image="image">
     </registry-image-config>
 
-    <h2>Image Metadata</h2>
+    <hr>
     <registry-image-meta image="image">
     </registry-image-meta>
 
-    <h2>Image Layers</h2>
+    <hr>
     <registry-image-layers layers="layers">
     </registry-image-layers>
 
