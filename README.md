@@ -26,8 +26,9 @@ To see a simple running example git clone this repo and run
 
 ```
 npm install
-grunt depends
-firefox index.html
+bower install
+python -m SimpleHTTPServer &
+firefox http://localhost:8000
 ```
 
 This will install any required dependencies necessary to run the ```index.html``` demo.
