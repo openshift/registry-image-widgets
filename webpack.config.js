@@ -39,7 +39,10 @@ module.exports = {
         reporter: function (errors) {
             var loader = this;
             errors.forEach(function(err) {
-                console.log(loader.resource + ":" + err.line + ":" + err.character + ": " + err.reason);
+                if (err.line)
+                    console.log(loader.resource + ":" + err.line + ":" + err.character + ": " + err.reason);
+                else
+                    console.log(loader.resource + ":" + String(err));
             });
         }
     },
