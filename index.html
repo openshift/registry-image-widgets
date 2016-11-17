@@ -13,6 +13,7 @@
     body { margin: 20px; }
   </style>
   <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/angular-gettext/dist/angular-gettext.js"></script>
   <script src="bower_components/momentjs/moment.js"></script>
   <script src="dist/image-widgets.js"></script>
 </head>
@@ -44,7 +45,7 @@
             datasets.push(dataset);
         }
 
-        angular.module('exampleApp', ['registryUI.images'])
+        angular.module('exampleApp', ['registryUI.images', 'gettext'])
 	    .run(function($rootScope, imageLayers) {
                 $rootScope.image = datasets[0];
                 $rootScope.layers = imageLayers($rootScope.image);

@@ -40,6 +40,7 @@ Include the JS and CSS files, after angularjs and d3:
 
 ```xml
 <script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/angular/angular-gettext.js"></script>
 <script src="bower_components/momentjs/moment.js"></script>
 <script src="bower_components/registry-image-widgets/dist/images.js"></script>
 <link rel="stylesheet" href="bower_components/registry-image-widgets/dist/images.css" />

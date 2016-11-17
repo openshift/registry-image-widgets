@@ -40,49 +40,56 @@
         return layer.v1Compatibility.id;
     }
 
-    function prepareLayer(layer, index, layers) {
-        var result;
-        /* DockerImageManifest */
-        if (layer.v1Compatibility) {
-            result = {
-                id: layer.v1Compatibility.id,
-                size: layer.v1Compatibility.Size || 0,
-                label: v1CompatibilityLabel(layer, layers[index + 1])
-            };
+    angular.module('registryUI.images')
 
-        /* DockerImageLayers */
-        } else if (layer.name && layer.size) {
-            result = {
-                id: layer.name,
-                size: layer.size || 0,
-                label: layer.name,
-            };
+    .factory('prepareLayer', [
+        'gettextCatalog',
+        function(gettextCatalog) {
+            return function prepareLayer(layer, index, layers) {
+                var result;
+                /* DockerImageManifest */
+                if (layer.v1Compatibility) {
+                    result = {
+                        id: layer.v1Compatibility.id,
+                        size: layer.v1Compatibility.Size || 0,
+                        label: v1CompatibilityLabel(layer, layers[index + 1])
+                    };
 
-        /* Unsupported layer type */
-        } else {
-            result = {
-                size: 0,
-                id: index,
-                label: "Unknown layer",
+                /* DockerImageLayers */
+                } else if (layer.name && layer.size) {
+                    result = {
+                        id: layer.name,
+                        size: layer.size || 0,
+                        label: layer.name,
+                    };
+
+                /* Unsupported layer type */
+                } else {
+                    result = {
+                        size: 0,
+                        id: index,
+                        label: gettextCatalog.getString("Unknown layer"),
+                    };
+                }
+
+                /* Some hints for coloring the display */
+                if (result.label.indexOf("RUN ") === 0)
+                    result.hint = "run";
+                else if (result.label.indexOf("ADD ") === 0 || result.size > 8192)
+                    result.hint = "add";
+                else
+                    result.hint = "other";
+
+                return result;
             };
         }
-
-        /* Some hints for coloring the display */
-        if (result.label.indexOf("RUN ") === 0)
-            result.hint = "run";
-        else if (result.label.indexOf("ADD ") === 0 || result.size > 8192)
-            result.hint = "add";
-        else
-            result.hint = "other";
-
-        return result;
-    }
-
-    angular.module('registryUI.images')
+    ])
 
     .directive('registryImageLayers', [
         'imageLayers',
-        function(imageLayers) {
+        'prepareLayer',
+        'gettextCatalog',
+        function(imageLayers, prepareLayer, gettextCatalog) {
             return {
                 restrict: 'E',
                 scope: {
@@ -92,14 +99,17 @@
                 templateUrl: 'registry-image-widgets/views/image-layers.html',
                 link: function($scope, element, attributes) {
                     $scope.formatSize = function(bytes) {
-                        if (!bytes)
+                        var n;
+                        if (!bytes) {
                             return "";
-                        else if (bytes > 1024 && typeof cockpit != "undefined")
+                        } else if (bytes > 1024 && typeof cockpit != "undefined") {
                             return cockpit.format_bytes(bytes);
-                        else if (bytes > 1024 * 1024)
-                            return (bytes / (1024 * 1024)).toFixed(1) + " MB";
-                        else
-                            return bytes + " B";
+                        } else if (bytes > 1024 * 1024) {
+                            n = (bytes / (1024 * 1024)).toFixed(1);
+                            return gettextCatalog.getPlural(n, $scope, "{0} MB", "{0} MB").replace("{0}", n);
+                        } else {
+                            return gettextCatalog.getPlural(n, $scope, "{0} byte", "{0} bytes").replace("{0}", bytes);
+                        }
                     };
 
                     $scope.$watch('data', function(layers) {

@@ -16,7 +16,7 @@
   "ignore": [
     "**/.*",
     "Gruntfile.js",
-    "*.html",
+    "index.html",
     "package.json",
     "/*.js",
     "node_modules",
@@ -29,7 +29,8 @@
     "dist/image-widgets.css"
   ],
   "dependencies": {
-    "angular": ">=1.3.8 <1.6"
+    "angular": ">=1.3.8 <1.6",
+    "angular-gettext": ">=2.3.8"
   },
   "devDependencies": {
     "patternfly": ">=2.9.0",
