@@ -9,16 +9,32 @@ dl.registry-image-tags .registry-image-tag:after {
   content: ' ';
   white-space: pre;
 }
+registry-imagestream-body a[ng-click] {
+  cursor: pointer;
+}
+.registry-image-pull code,
+.registry-imagestream-push code {
+  display: block;
+  white-space: pre;
+}
 .registry-image-pull code em,
-.registry-image-pull code span.placeholder {
+.registry-imagestream-push code em,
+.registry-image-pull code span.placeholder,
+.registry-imagestream-push code span.placeholder {
   font-weight: bold;
   font-style: normal;
   color: #888;
 }
-.registry-image-pull .fa-info-circle {
+.registry-image-pull .fa-info-circle,
+.registry-imagestream-push .fa-info-circle {
   font-size: 15px;
   color: #888;
   padding: 0px 5px;
+}
+.registry-imagestream-lock {
+  color: #deaa87;
+  font-size: 1.5em;
+  vertical-align: middle;
 }
 registry-image-layers {
   border: 1px solid #d1d1d1;

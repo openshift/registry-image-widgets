@@ -1,0 +1,10 @@
+<div class="registry-imagestream-push">
+    <p>
+        <i class="fa fa-info-circle"></i>
+        <span translate>To push to an image to this image stream:</span>
+    </p>
+    <code ng-if="settings.registry.host">$ sudo docker tag <em>myimage</em> <span>{{settings.registry.host}}</span>/{{ imagestream.metadata.namespace }}/{{ imagestream.metadata.name}}:<em>tag</em>
+    $ sudo docker push <span>{{settings.registry.host}}</span>/{{ imagestream.metadata.namespace }}/{{ imagestream.metadata.name}}</code>
+    <code ng-if="!settings.registry.host">$ sudo docker tag <em>myimage</em> <span class="placeholder">registry</span>/{{ imagestream.metadata.namespace }}/{{ imagestream.metadata.name}}:<em>tag</em>
+    $ sudo docker push <span class="placeholder">registry</span>/{{ imagestream.metadata.namespace }}/{{ imagestream.metadata.name}}</code>
+</div>

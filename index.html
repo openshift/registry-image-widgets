@@ -50,6 +50,25 @@
     <registry-image-layers layers="layers">
     </registry-image-layers>
 
+    <h3>registry-imagestream-body</h3>
+    <hr>
+
+    <registry-imagestream-body imagestream="imagestream" project-modify="projectModify"
+       project-sharing="projectSharing" imagestream-modify="imagestreamModify">
+    </registry-imagestream-body>
+
+    <h3>registry-imagestream-push</h3>
+    <hr>
+
+    <registry-imagestream-push imagestream="imagestream" settings="settings">
+    </registry-imagestream-push>
+
+    <h3>registry-imagestream-meta</h3>
+    <hr>
+
+    <registry-imagestream-meta imagestream="imagestream">
+    </registry-imagestream-meta>
+
     <script type="text/javascript">
         var datasets = [];
 
@@ -60,6 +79,7 @@
         angular.module('exampleApp', ['registryUI.images', 'gettext'])
 	    .run(function($rootScope, imageLayers) {
                 $rootScope.image = datasets[0];
+                $rootScope.imagestream = datasets[1];
                 $rootScope.layers = imageLayers($rootScope.image);
 
                 $rootScope.settings = {
@@ -70,9 +90,23 @@
                 $rootScope.names = [
                     "blah/blah",
                 ];
+
+                $rootScope.imagestreamModify = null;
+
+                $rootScope.projectModify = function(project) {
+                    console.log("project modify here");
+                    alert("Modify " + project);
+                    return false;
+                };
+
+                $rootScope.projectSharing = function(project) {
+                    return "shared";
+                };
+
             });
 
     </script>
     <script type="text/javascript" src="tests/image.jsonp"></script>
+    <script type="text/javascript" src="tests/imagestream.jsonp"></script>
 </body>
 </html>

@@ -1,0 +1,36 @@
+<div ng-repeat="statustags in imagestream.status.tags">
+  <div ng-repeat="condition in statustags.conditions"
+      ng-if="condition.type == 'ImportSuccess' && condition.status == 'False'"
+      class="alert alert-danger">
+    <span class="pficon pficon-error-circle-o"></span>
+    <span translate>{{ condition.message }}. Timestamp: {{ condition.lastTransitionTime }} Error count: {{ condition.generation }}</span>
+    <a translate ng-if="imagestreamModify" ng-click="imagestreamModify(imagestream)"
+        class="alert-link">Edit image stream</a>
+  </div>
+</div>
+<dl class="dl-horizontal left">
+    <dt translate>Access Policy</dt>
+    <dd ng-switch="projectSharing(imagestream.metadata.namespace)">
+      <div ng-switch-when="anonymous" >
+        <a translate ng-click="projectModify(imagestream.metadata.namespace)">Images may be pulled by anonymous users</a>
+        <i title="Images accessible to anonymous users" class="fa fa-unlock registry-imagestream-lock"></i>
+      </div>
+      <div ng-switch-when="shared" >
+        <a translate ng-click="projectModify(imagestream.metadata.namespace)">Images may be pulled by any authenticated user or group</a>
+        <i title="Images accessible to authenticated users" class="fa fa-lock registry-imagestream-lock"></i>
+      </div>
+      <div ng-switch-when="private">
+        <a translate ng-click="projectModify(imagestream.metadata.namespace)">Images may only be pulled by specific users or groups</a>
+        <i title="Images only accessible to members" class="fa fa-lock registry-imagestream-lock"></i>
+      </div>
+      <div ng-switch-default>
+        <a translate ng-click="projectModify(imagestream.metadata.namespace)">Unknown</a>
+        <i title="Unknown or invalid image access policy" class="fa fa-lock registry-imagestream-lock"></i>
+      </div>
+    </dd>
+    <dt translate>Pull repository</dt>
+    <dd ng-if="imagestream.spec.dockerImageRepository"><tt>{{imagestream.spec.dockerImageRepository}}</tt></dd>
+    <dd ng-if="!imagestream.spec.dockerImageRepository"><em translate>None</em></dd>
+    <dt translate>Image count</dt>
+    <dd>{{imagestream.status.tags.length}}</dd>
+</dl>

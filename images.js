@@ -201,6 +201,51 @@ angular.module('registryUI.images', [
             }
         };
     }
+])
+
+.directive('registryImagestreamBody', [
+    function() {
+        return {
+            restrict: 'E',
+            scope: {
+                imagestream: '=',
+                imagestreamFunc: '&imagestreamModify',
+                projectFunc: '&projectModify',
+                sharingFunc: '&projectSharing',
+            },
+            templateUrl: 'registry-image-widgets/views/imagestream-body.html',
+            link: function(scope, element, attrs) {
+                scope.projectModify = scope.projectFunc();
+                scope.projectSharing = scope.sharingFunc();
+                scope.imagestreamModify = scope.imagestreamFunc();
+            }
+        };
+    }
+])
+
+.directive('registryImagestreamPush', [
+    function(imageDockerConfig) {
+        return {
+            restrict: 'E',
+            scope: {
+                imagestream: '=',
+                settings: '=',
+            },
+            templateUrl: 'registry-image-widgets/views/imagestream-push.html',
+        };
+    }
+])
+
+.directive('registryImagestreamMeta', [
+    function(imageDockerConfig) {
+        return {
+            restrict: 'E',
+            scope: {
+                imagestream: '=',
+            },
+            templateUrl: 'registry-image-widgets/views/imagestream-meta.html',
+        };
+    }
 ]);
 
 }());
