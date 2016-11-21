@@ -24,9 +24,9 @@
  * Executes callback for each stream.status.tag[x].item[y]
  * in a stream. Similar behavior to angular.forEach()
  */
-function imagestreamEachTagItem(stream, callback, context) {
+function imagestreamEachTagItem(imagestream, callback, context) {
     var i, il, items;
-    var t, tl, tags = (stream.status || {}).tags || [];
+    var t, tl, tags = (imagestream.status || {}).tags || [];
     for (t = 0, tl = tags.length; t < tl; t++) {
         items = (tags[t].items) || [];
         for (i = 0, il = items.length; i < il; i++)
