@@ -16,8 +16,18 @@ dl.registry-image-tags {
     }
 }
 
-.registry-image-pull {
+registry-imagestream-body {
+    a[ng-click] {
+        cursor: pointer;
+    }
+}
+
+.registry-image-pull,
+.registry-imagestream-push {
     code {
+	display: block;
+        white-space: pre;
+
     	em, span.placeholder {
             font-weight: bold;
             font-style: normal;
@@ -31,3 +41,10 @@ dl.registry-image-tags {
         padding: 0px 5px;
     }
 }
+
+.registry-imagestream-lock {
+    color: #deaa87;
+    font-size: 1.5em;
+    vertical-align: middle;
+}
+

@@ -24,9 +24,9 @@
  * Executes callback for each stream.status.tag[x].item[y]
  * in a stream. Similar behavior to angular.forEach()
  */
-function imagestreamEachTagItem(stream, callback, context) {
+function imagestreamEachTagItem(imagestream, callback, context) {
     var i, il, items;
-    var t, tl, tags = (stream.status || {}).tags || [];
+    var t, tl, tags = (imagestream.status || {}).tags || [];
     for (t = 0, tl = tags.length; t < tl; t++) {
         items = (tags[t].items) || [];
         for (i = 0, il = items.length; i < il; i++)
@@ -199,6 +199,51 @@ angular.module('registryUI.images', [
                         scope.labels = null;
                 });
             }
+        };
+    }
+])
+
+.directive('registryImagestreamBody', [
+    function() {
+        return {
+            restrict: 'E',
+            scope: {
+                imagestream: '=',
+                imagestreamFunc: '&imagestreamModify',
+                projectFunc: '&projectModify',
+                sharingFunc: '&projectSharing',
+            },
+            templateUrl: 'registry-image-widgets/views/imagestream-body.html',
+            link: function(scope, element, attrs) {
+                scope.projectModify = scope.projectFunc();
+                scope.projectSharing = scope.sharingFunc();
+                scope.imagestreamModify = scope.imagestreamFunc();
+            }
+        };
+    }
+])
+
+.directive('registryImagestreamPush', [
+    function(imageDockerConfig) {
+        return {
+            restrict: 'E',
+            scope: {
+                imagestream: '=',
+                settings: '=',
+            },
+            templateUrl: 'registry-image-widgets/views/imagestream-push.html',
+        };
+    }
+])
+
+.directive('registryImagestreamMeta', [
+    function(imageDockerConfig) {
+        return {
+            restrict: 'E',
+            scope: {
+                imagestream: '=',
+            },
+            templateUrl: 'registry-image-widgets/views/imagestream-meta.html',
         };
     }
 ]);

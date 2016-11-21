@@ -54,7 +54,10 @@
 	__webpack_require__(12);
 	__webpack_require__(13);
 	__webpack_require__(14);
-	module.exports = __webpack_require__(15);
+	__webpack_require__(15);
+	__webpack_require__(16);
+	__webpack_require__(17);
+	module.exports = __webpack_require__(18);
 
 
 /***/ },
@@ -90,9 +93,9 @@
 	 * Executes callback for each stream.status.tag[x].item[y]
 	 * in a stream. Similar behavior to angular.forEach()
 	 */
-	function imagestreamEachTagItem(stream, callback, context) {
+	function imagestreamEachTagItem(imagestream, callback, context) {
 	    var i, il, items;
-	    var t, tl, tags = (stream.status || {}).tags || [];
+	    var t, tl, tags = (imagestream.status || {}).tags || [];
 	    for (t = 0, tl = tags.length; t < tl; t++) {
 	        items = (tags[t].items) || [];
 	        for (i = 0, il = items.length; i < il; i++)
@@ -265,6 +268,51 @@
 	                        scope.labels = null;
 	                });
 	            }
+	        };
+	    }
+	])
+	
+	.directive('registryImagestreamBody', [
+	    function() {
+	        return {
+	            restrict: 'E',
+	            scope: {
+	                imagestream: '=',
+	                imagestreamFunc: '&imagestreamModify',
+	                projectFunc: '&projectModify',
+	                sharingFunc: '&projectSharing',
+	            },
+	            templateUrl: 'registry-image-widgets/views/imagestream-body.html',
+	            link: function(scope, element, attrs) {
+	                scope.projectModify = scope.projectFunc();
+	                scope.projectSharing = scope.sharingFunc();
+	                scope.imagestreamModify = scope.imagestreamFunc();
+	            }
+	        };
+	    }
+	])
+	
+	.directive('registryImagestreamPush', [
+	    function(imageDockerConfig) {
+	        return {
+	            restrict: 'E',
+	            scope: {
+	                imagestream: '=',
+	                settings: '=',
+	            },
+	            templateUrl: 'registry-image-widgets/views/imagestream-push.html',
+	        };
+	    }
+	])
+	
+	.directive('registryImagestreamMeta', [
+	    function(imageDockerConfig) {
+	        return {
+	            restrict: 'E',
+	            scope: {
+	                imagestream: '=',
+	            },
+	            templateUrl: 'registry-image-widgets/views/imagestream-meta.html',
 	        };
 	    }
 	]);
@@ -625,6 +673,39 @@
 	catch(e){ngModule=angular.module("ng",[])}
 	var v1="<div ng-if=\"names\" class=\"registry-image-pull\"> <p> <i class=\"fa fa-info-circle\"></i>\n<span translate>To pull this image:</span> </p> <code ng-if=\"!settings.registry.host\">$ sudo docker pull <span class=\"placeholder\">registry</span>/{{names[0]}}</code>\n<code ng-if=\"settings.registry.host\">$ sudo docker pull <span>{{settings.registry.host}}</span>/{{names[0]}}</code> </div>";
 	ngModule.run(["$templateCache",function(c){c.put("registry-image-widgets/views/image-pull.html",v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 16 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<div ng-repeat=\"statustags in imagestream.status.tags\"> <div ng-repeat=\"condition in statustags.conditions\" ng-if=\"condition.type == 'ImportSuccess' && condition.status == 'False'\" class=\"alert alert-danger\"> <span class=\"pficon pficon-error-circle-o\"></span>\n<span translate>{{ condition.message }}. Timestamp: {{ condition.lastTransitionTime }} Error count: {{ condition.generation }}</span>\n<a translate ng-if=\"imagestreamModify\" ng-click=\"imagestreamModify(imagestream)\" class=\"alert-link\">Edit image stream</a> </div> </div> <dl class=\"dl-horizontal left\"> <dt translate>Access Policy</dt> <dd ng-switch=\"projectSharing(imagestream.metadata.namespace)\"> <div ng-switch-when=\"anonymous\"> <a translate ng-click=\"projectModify(imagestream.metadata.namespace)\">Images may be pulled by anonymous users</a>\n<i title=\"Images accessible to anonymous users\" class=\"fa fa-unlock registry-imagestream-lock\"></i> </div> <div ng-switch-when=\"shared\"> <a translate ng-click=\"projectModify(imagestream.metadata.namespace)\">Images may be pulled by any authenticated user or group</a>\n<i title=\"Images accessible to authenticated users\" class=\"fa fa-lock registry-imagestream-lock\"></i> </div> <div ng-switch-when=\"private\"> <a translate ng-click=\"projectModify(imagestream.metadata.namespace)\">Images may only be pulled by specific users or groups</a>\n<i title=\"Images only accessible to members\" class=\"fa fa-lock registry-imagestream-lock\"></i> </div> <div ng-switch-default> <a translate ng-click=\"projectModify(imagestream.metadata.namespace)\">Unknown</a>\n<i title=\"Unknown or invalid image access policy\" class=\"fa fa-lock registry-imagestream-lock\"></i> </div> </dd> <dt translate>Pull repository</dt> <dd ng-if=\"imagestream.spec.dockerImageRepository\"><tt>{{imagestream.spec.dockerImageRepository}}</tt></dd> <dd ng-if=\"!imagestream.spec.dockerImageRepository\"><em translate>None</em></dd> <dt translate>Image count</dt> <dd>{{imagestream.status.tags.length}}</dd> </dl>";
+	ngModule.run(["$templateCache",function(c){c.put("registry-image-widgets/views/imagestream-body.html",v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 17 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<dl class=\"dl-horizontal left\"> <dt ng-if=\"imagestream.metadata.annotations\" translate>Annotations</dt> <dd ng-repeat=\"(name, value) in imagestream.metadata.annotations\">{{name}}: {{value}}</dd> </dl>";
+	ngModule.run(["$templateCache",function(c){c.put("registry-image-widgets/views/imagestream-meta.html",v1)}]);
+	module.exports=v1;
+
+/***/ },
+/* 18 */
+/***/ function(module, exports) {
+
+	var angular=window.angular,ngModule;
+	try {ngModule=angular.module(["ng"])}
+	catch(e){ngModule=angular.module("ng",[])}
+	var v1="<div class=\"registry-imagestream-push\"> <p> <i class=\"fa fa-info-circle\"></i>\n<span translate>To push to an image to this image stream:</span> </p> <code ng-if=\"settings.registry.host\">$ sudo docker tag <em>myimage</em> <span>{{settings.registry.host}}</span>/{{ imagestream.metadata.namespace }}/{{ imagestream.metadata.name}}:<em>tag</em>\n$ sudo docker push <span>{{settings.registry.host}}</span>/{{ imagestream.metadata.namespace }}/{{ imagestream.metadata.name}}</code>\n<code ng-if=\"!settings.registry.host\">$ sudo docker tag <em>myimage</em> <span class=\"placeholder\">registry</span>/{{ imagestream.metadata.namespace }}/{{ imagestream.metadata.name}}:<em>tag</em>\n$ sudo docker push <span class=\"placeholder\">registry</span>/{{ imagestream.metadata.namespace }}/{{ imagestream.metadata.name}}</code> </div>";
+	ngModule.run(["$templateCache",function(c){c.put("registry-image-widgets/views/imagestream-push.html",v1)}]);
 	module.exports=v1;
 
 /***/ }

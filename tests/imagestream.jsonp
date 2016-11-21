@@ -1,0 +1,75 @@
+sink({
+    "kind": "ImageStream",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "juggs",
+        "namespace": "marmalade",
+        "selfLink": "/oapi/v1/namespaces/marmalade/imagestreams/juggs",
+        "uid": "2bf76d19-78f5-11e6-8d3f-5254009e00f1",
+        "resourceVersion": "576",
+        "generation": 1,
+        "creationTimestamp": "2016-09-12T14:28:28Z",
+        "annotations": { "openshift.io/image.managed": "true" }
+    },
+    "spec": {},
+    "status": {
+        "dockerImageRepository": "172.30.193.99:5000/marmalade/juggs",
+        "tags": [
+            {
+                "tag": "latest",
+                "items": [
+                    {
+                        "created": "2016-09-12T14:31:20Z",
+                        "dockerImageReference": "172.30.193.99:5000/marmalade/juggs@sha256:c9d2a475a1d31b414a09153abf40a79f1edc6d78455b35e8c612690d1a46f156",
+                        "image": "sha256:c9d2a475a1d31b414a09153abf40a79f1edc6d78455b35e8c612690d1a46f156",
+                        "generation": 1
+                    }
+                ]
+            },
+            {
+                "tag": "2.11",
+                "items": [
+                    {
+                        "created": "2016-09-12T14:30:41Z",
+                        "dockerImageReference": "172.30.193.99:5000/marmalade/juggs@sha256:8771d77dfc07057cabaa46a03cb764d732c1db23a834ffd8af7215d701da2d11",
+                        "image": "sha256:8771d77dfc07057cabaa46a03cb764d732c1db23a834ffd8af7215d701da2d11",
+                        "generation": 1
+                    }
+                ]
+            },
+            {
+                "tag": "2.9",
+                "items": [
+                    {
+                        "created": "2016-09-12T14:31:19Z",
+                        "dockerImageReference": "172.30.193.99:5000/marmalade/juggs@sha256:ad806a3ab5e31bbe54bec08798ddcb4f0a898daaee332bbb382e6c86f5f21d75",
+                        "image": "sha256:ad806a3ab5e31bbe54bec08798ddcb4f0a898daaee332bbb382e6c86f5f21d75",
+                        "generation": 1
+                    }
+                ]
+            },
+            {
+                "tag": "2.8",
+                "items": [
+                    {
+                        "created": "2016-09-12T14:31:00Z",
+                        "dockerImageReference": "172.30.193.99:5000/marmalade/juggs@sha256:905dd0287129b3e976f10c5d01f2ea020e08674c7281289028ab3f47cf6d89ed",
+                        "image": "sha256:905dd0287129b3e976f10c5d01f2ea020e08674c7281289028ab3f47cf6d89ed",
+                        "generation": 1
+                    }
+                ]
+            },
+            {
+                "tag": "2.5",
+                "items": [
+                    {
+                        "created": "2016-09-12T14:31:00Z",
+                        "dockerImageReference": "172.30.193.99:5000/marmalade/juggs@sha256:d30514421801435ae177c2fb6449f8648f2a33c0f144933fdb23912867def2bb",
+                        "image": "sha256:d30514421801435ae177c2fb6449f8648f2a33c0f144933fdb23912867def2bb",
+                        "generation": 1
+                    }
+                ]
+            }
+        ]
+    }
+});
