@@ -1,6 +1,6 @@
 {
   "name": "registry-image-widgets",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Renders Openshift Image Resources",
   "moduleType": [
     "globals"
