@@ -67,6 +67,12 @@
     <registry-imagestream-meta imagestream="imagestream">
     </registry-imagestream-meta>
 
+    <h3>registry-imagestream-listing</h3>
+    <hr>
+
+    <registry-imagestream-listing imagestream="imagestream" imagestream-path="imagestreamPath">
+    </hr>
+
     <script type="text/javascript">
         var datasets = [];
 
@@ -91,6 +97,13 @@
 
                 $rootScope.imagestreamModify = null;
 
+                $rootScope.imagestreamPath = function(imagestream, tag) {
+                    var link = "/imagestream/" + imagestream.metadata.name;
+                    if (tag)
+                        link += "/" + tag.name;
+                    return link;
+                }
+
                 $rootScope.projectModify = function(project) {
                     console.log("project modify here");
                     alert("Modify " + project);
@@ -100,7 +113,6 @@
                 $rootScope.projectSharing = function(project) {
                     return "shared";
                 };
-
             });
 
     </script>

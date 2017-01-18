@@ -25,6 +25,7 @@ module.exports = {
             srcdir + "views/image-layers.html",
             srcdir + "views/image-pull.html",
             srcdir + "views/imagestream-body.html",
+            srcdir + "views/imagestream-listing.html",
             srcdir + "views/imagestream-meta.html",
             srcdir + "views/imagestream-push.html",
         ]

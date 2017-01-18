@@ -1,4 +1,5 @@
 @import "variables.less";
+@import (less) "listing.css";
 
 dl.registry-image-tags {
     dt {
@@ -15,6 +16,32 @@ dl.registry-image-tags {
         white-space: pre;
     }
 }
+
+.registry-image-tag {
+    border: 2px solid @tag-border;
+    border-radius: 7px;
+    padding: 3px 5px;
+    white-space: nowrap;
+    background-color: @listing-hover;
+}
+
+a.registry-image-tag {
+    color: inherit;
+}
+
+.registry-image-tag a {
+    color: #999;
+    position: relative;
+    padding-left: 4px;
+    font-size: 12px;
+    top: 1px;
+}
+
+.registry-image-tag a:hover {
+    color: black;
+    text-decoration: none;
+}
+
 
 registry-imagestream-body {
     a[ng-click] {
@@ -50,3 +77,81 @@ registry-imagestream-push {
     vertical-align: middle;
 }
 
+/* ----------------------------------------------------------------------
+ * Imagestream listing styles
+ */
+
+registry-imagestream-listing table {
+    max-width: 2000px;
+    min-width: 85%;
+
+    tbody:hover {
+        background-color: #d4edfa;
+    }
+
+    tr.registry-listing-top td {
+	padding-bottom: 0px;
+    }
+
+    tr.registry-listing-bottom td {
+	padding-top: 0px;
+    }
+
+    tbody.open .listing-ct-panel .listing-ct-body {
+        border-right: 1px solid #ccc;
+    }
+
+    tbody.open tr.listing-ct-panel td div.listing-ct-head {
+        border-right: 1px solid #ccc;
+    }
+
+    thead {
+        th {
+            border-top: none;
+        }
+    }
+
+    tr.listing-ct-item {
+	border-left: 20px solid transparent;
+
+        td.registry-tag-label {
+            vertical-align: top;
+            background: linear-gradient(90deg, transparent 10px, @tag-border 10px, @tag-border 12px, transparent 12px);
+	    padding-left: 0px;
+        }
+
+        td.listing-ct-toggle:hover + td.registry-tag-label {
+            background-color: #ededed
+        }
+
+        border-top: none;
+        border-bottom: none;
+    }
+
+    tbody.first {
+        tr.registry-listing-top td {
+            padding-top: 20px;
+        }
+    }
+
+    tbody.last {
+	tr.listing-ct-item.registry-listing-top td.registry-tag-label {
+            background-size: 100% 20px;
+            background-repeat: no-repeat;
+        }
+    }
+
+    tr.registry-listing-imagestream-item {
+        border-top: 1px solid @gray-lighter;
+
+        th, td {
+            border-bottom: 2px solid @tag-border;
+            font-size: 14px;
+            padding-bottom: 5px;
+        }
+    }
+
+    tr.listing-ct-item tt {
+        color: @metadata-color;
+    }
+}

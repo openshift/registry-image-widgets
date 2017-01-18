@@ -112,6 +112,57 @@ angular.module('registryUI.images', [
     }
 ])
 
+.factory('imagestreamTags', [
+    'WeakMap',
+    function(WeakMap) {
+        var weak = new WeakMap();
+        return function imagestreamTags(imagestream) {
+            if (!imagestream)
+                return [ ];
+            var name, build, tags = weak.get(imagestream);
+            if (!tags) {
+                build = { };
+                angular.forEach(imagestream.spec.tags, function(tag) {
+                    build[tag.name] = build[tag.name] || { name: tag.name, imagestream: imagestream };
+                    build[tag.name].spec = angular.copy(tag);
+                });
+                angular.forEach(imagestream.status.tags, function(tag) {
+                    build[tag.tag] = build[tag.tag] || { name: tag.tag, imagestream: imagestream };
+                    build[tag.tag].status = angular.copy(tag);
+                });
+                tags = [ ];
+                for (name in build)
+                    tags.push(build[name]);
+                weak.set(imagestream, tags);
+            }
+            return tags;
+        };
+    }
+])
+
+.factory('imagestreamTagFromName', [
+    function() {
+        return function imagestreamFromName(imagestream, from) {
+            var parts, result = [ ];
+            if (from && from.kind === "ImageStreamImage")
+                result.delimiter = "@";
+            else if (from && from.kind === "ImageStreamTag")
+                result.delimiter = ":";
+            if (result.delimiter) {
+                parts = from.name.split(result.delimiter);
+                if (parts.length === 1) {
+                    result.push(imagestream.spec.name, parts[0]);
+                } else {
+                    result.push(parts.shift());
+                    result.push(parts.join(result.delimiter));
+                }
+                result.qualified = result.join(result.delimiter);
+            }
+            return result;
+        };
+    }
+])
+
 .directive('registryImageBody', [
     'imageLayers',
     'imageDockerConfig',
@@ -244,6 +295,65 @@ angular.module('registryUI.images', [
                 imagestream: '=',
             },
             templateUrl: 'registry-image-widgets/views/imagestream-meta.html',
+        };
+    }
+])
+
+.directive('registryImagestreamListing', [
+    'imagestreamTags',
+    '$location',
+    function(imagestreamTags, $location) {
+        return {
+            restrict: 'E',
+            scope: {
+                imagestream: '=',
+                imagestreamFunc: '&imagestreamPath',
+            },
+            templateUrl: 'registry-image-widgets/views/imagestream-listing.html',
+            link: function(scope, element, attrs) {
+
+                scope.imagestreamTags = imagestreamTags;
+                scope.imagestreamPath = scope.imagestreamFunc();
+
+                /* Called when someone clicks on a row */
+                scope.imagestreamActivate = function imagestreamActivate(imagestream, tag, ev) {
+                    var event;
+                    if (scope.imagestreamExpanded(imagestream, tag)) {
+                        scope.imagestreamToggle(imagestream, tag, ev);
+                    } else {
+                        event = scope.$emit("activate", imagestream, tag, ev);
+                        if (!event.defaultPrevented && scope.imagestreamPath)
+                            $location.path(scope.imagestreamPath(imagestream, tag));
+                    }
+                    ev.preventDefault();
+                };
+
+                /* A list of all the expanded rows */
+                var expanded = { };
+
+                function identifier(imagestream, tag) {
+                    var id = imagestream.metadata.namespace + "/" + imagestream.metadata.name;
+                    if (tag)
+                        id += "/" + tag.name;
+                    return id;
+                }
+
+                /* Called to check the state of an expanded row */
+                scope.imagestreamExpanded = function imagestreamExpanded(imagestream, tag) {
+                    return identifier(imagestream, tag) in expanded;
+                };
+
+                /* Called when someone toggles a row */
+                scope.imagestreamToggle = function imagestreamToggle(imagestream, tag, ev) {
+                    var id = identifier(imagestream, tag);
+                    if (id in expanded)
+                        delete expanded[id];
+                    else
+                        expanded[id] = true;
+                    ev.stopPropagation();
+                };
+
+            }
         };
     }
 ]);
