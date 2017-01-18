@@ -9,28 +9,33 @@
   </div>
 </div>
 <dl class="dl-horizontal left">
-    <dt translate>Access Policy</dt>
-    <dd ng-switch="projectSharing(imagestream.metadata.namespace)">
+    <dt translate ng-if="projectSharing">Access Policy</dt>
+    <dd ng-if="projectSharing" ng-switch="projectSharing(imagestream.metadata.namespace)">
       <div ng-switch-when="anonymous" >
-        <a translate ng-click="projectModify(imagestream.metadata.namespace)">Images may be pulled by anonymous users</a>
+        <a translate ng-if="projectModify" ng-click="projectModify(imagestream.metadata.namespace)">Images may be pulled by anonymous users</a>
+        <span translate ng-if="!projectModify">Images may be pulled by anonymous users</span>
         <i title="Images accessible to anonymous users" class="fa fa-unlock registry-imagestream-lock"></i>
       </div>
       <div ng-switch-when="shared" >
-        <a translate ng-click="projectModify(imagestream.metadata.namespace)">Images may be pulled by any authenticated user or group</a>
+        <a translate ng-if="projectModify" ng-click="projectModify(imagestream.metadata.namespace)">Images may be pulled by any authenticated user or group</a>
+        <span translate ng-if="!projectModify">Images may be pulled by any authenticated user or group</span>
         <i title="Images accessible to authenticated users" class="fa fa-lock registry-imagestream-lock"></i>
       </div>
       <div ng-switch-when="private">
-        <a translate ng-click="projectModify(imagestream.metadata.namespace)">Images may only be pulled by specific users or groups</a>
+        <a translate ng-if="projectModify" ng-click="projectModify(imagestream.metadata.namespace)">Images may only be pulled by specific users or groups</a>
+        <span translate ng-if="!projectModify">Images may only be pulled by specific users or groups</span>
         <i title="Images only accessible to members" class="fa fa-lock registry-imagestream-lock"></i>
       </div>
       <div ng-switch-default>
-        <a translate ng-click="projectModify(imagestream.metadata.namespace)">Unknown</a>
+        <a translate ng-if="projectModify" ng-click="projectModify(imagestream.metadata.namespace)">Unknown</a>
+        <span translate ng-if="!projectModify">Unknown</span>
         <i title="Unknown or invalid image access policy" class="fa fa-lock registry-imagestream-lock"></i>
       </div>
     </dd>
-    <dt translate>Pull repository</dt>
-    <dd ng-if="imagestream.spec.dockerImageRepository"><tt>{{imagestream.spec.dockerImageRepository}}</tt></dd>
-    <dd ng-if="!imagestream.spec.dockerImageRepository"><em translate>None</em></dd>
+    <dt translate ng-if-start="imagestream.spec.dockerImageRepository">Follows docker repo:</dt>
+    <dd ng-if-end><tt>{{imagestream.spec.dockerImageRepository}}</tt></dd>
+    <dt>Pulling repository:</dt>
+    <dd><tt>{{imagestream.status.dockerImageRepository}}</tt></dd>
     <dt translate>Image count</dt>
     <dd>{{imagestream.status.tags.length}}</dd>
 </dl>
