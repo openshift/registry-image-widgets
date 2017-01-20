@@ -37,5 +37,6 @@
     <dt>Pulling repository</dt>
     <dd><tt>{{imagestream.status.dockerImageRepository}}</tt></dd>
     <dt translate>Image count</dt>
-    <dd>{{imagestream.status.tags.length}}</dd>
+    <dd ng-if="imagestream.status.tags.length">{{imagestream.status.tags.length}}</dd>
+    <dd ng-if="!imagestream.status.tags.length">0</dd>
 </dl>
