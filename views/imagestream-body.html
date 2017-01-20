@@ -32,9 +32,9 @@
         <i title="Unknown or invalid image access policy" class="fa fa-lock registry-imagestream-lock"></i>
       </div>
     </dd>
-    <dt translate ng-if-start="imagestream.spec.dockerImageRepository">Follows docker repo:</dt>
+    <dt translate ng-if-start="imagestream.spec.dockerImageRepository">Follows docker repo</dt>
     <dd ng-if-end><tt>{{imagestream.spec.dockerImageRepository}}</tt></dd>
-    <dt>Pulling repository:</dt>
+    <dt>Pulling repository</dt>
     <dd><tt>{{imagestream.status.dockerImageRepository}}</tt></dd>
     <dt translate>Image count</dt>
     <dd>{{imagestream.status.tags.length}}</dd>
