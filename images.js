@@ -37,6 +37,7 @@ function imagestreamEachTagItem(imagestream, callback, context) {
 angular.module('registryUI.images', [
     'registryUI.client',
     'registryUI.date',
+    'gettext',
 ])
 
 .factory('imageDockerManifest', [
