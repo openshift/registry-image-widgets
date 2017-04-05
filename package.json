@@ -22,6 +22,6 @@
     "strict-loader": "*",
     "style-loader": "^0.13.1",
     "uglify-js": "*",
-    "webpack": ">1.13.0"
+    "webpack": ">1.13.0 <2.0"
   }
 }
