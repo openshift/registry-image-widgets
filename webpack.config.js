@@ -33,23 +33,6 @@ module.exports = {
     externals: {
         "angular": "angular",
     },
-    jshint: {
-        emitErrors: false,
-        failOnHint: true,
-        sub: true,
-        multistr: true,
-        undef: true,
-        predef: [ "window", "document", "console", "angular" ],
-        reporter: function (errors) {
-            var loader = this;
-            errors.forEach(function(err) {
-                if (err.line)
-                    console.log(loader.resource + ":" + err.line + ":" + err.character + ": " + err.reason);
-                else
-                    console.log(loader.resource + ":" + String(err));
-            });
-        }
-    },
 
     output: {
         path: distdir,
@@ -57,35 +40,58 @@ module.exports = {
         sourceMapFilename: "[file].map",
     },
     resolve: {
-        modulesDirectories: [ srcdir + path.sep + "bower_components" ]
-    },
-    resolveLoader: {
-        root: path.resolve(srcdir, 'node_modules')
+        modules: [
+            "node_modules",
+            srcdir + path.sep + "bower_components"
+        ]
     },
     plugins: [
         new extract("[name].css")
     ],
     devtool: "source-map",
     module: {
-        preLoaders: [
+        rules: [
             {
                 test: /\.js$/, // include .js files
                 exclude: /node_modules\//, // exclude external dependencies
-                loader: "jshint-loader"
-            }
-        ],
-        loaders: [
+                use: [{
+                    loader: "jshint-loader",
+                    options: {
+                        emitErrors: false,
+                        failOnHint: true,
+                        sub: true,
+                        multistr: true,
+                        undef: true,
+                        predef: [ "window", "document", "console", "angular" ],
+                        reporter: function (errors) {
+                            var loader = this;
+                            errors.forEach(function(err) {
+                                if (err.line)
+                                    console.log(loader.resource + ":" + err.line + ":" + err.character + ": " + err.reason);
+                                else
+                                    console.log(loader.resource + ":" + String(err));
+                            });
+                        }
+                    }
+                }]
+            },
             {
                 test: /\.css$/,
-                loader: extract.extract("style-loader", "css-loader")
+                loader: extract.extract({ fallback: 'style-loader', use: 'css-loader' })
             },
             {
                 test: /\.less$/,
-                loader: extract.extract('css?sourceMap!' + 'less?sourceMap')
+                use: extract.extract({
+                    use: [{
+                        loader: 'css-loader?sourceMap'
+                    }, {
+                        loader: 'less-loader?sourceMap'
+                    }]
+                })
             },
             {
                 test: /\.html$/,
-                loader: "ng-cache?prefix=registry-image-widgets/[dir]"
+                loader: "ng-cache-loader?prefix=registry-image-widgets/[dir]"
             }
         ]
     },

@@ -87,7 +87,5 @@ See ```images.css``` for an example default look and feel.
 Contributing
 ------------
 
-Git clone this repo and run `grunt serve`. While the server is running, any time changes
-are made to the JS or HTML files the build will run automatically.  Before committing any
-changes run the `grunt build` task to make sure dist/container-terminal.js has been updated
-and include the updated file in your commit.
+Before committing any changes run the `webpack` task to make sure files have been
+updated, and include the updated file in your commit.
