@@ -19,8 +19,8 @@
     <dd ng-if="!labels['build-date'] && !layers[0].v1Compatibility.created && image.dockerImageMetadata.Created" title="{{image.dockerImageMetadata.Created}}">{{image.dockerImageMetadata.Created | dateRelative}}</dd>
     <dt translate>Digest</dt>
     <dd><tt>{{ image.metadata.name }}</tt></dd>
-    <dt translate>Identifier</dt>
-    <dd><tt>{{ config.Image }}</tt></dd>
+    <dt ng-if-start="config.Image" translate>Identifier</dt>
+    <dd ng-if-end><tt>{{ config.Image }}</tt></dd>
 </dl>
 
 <dl class="registry-image-tags" ng-if="names">
