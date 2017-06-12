@@ -397,29 +397,26 @@ dl.registry-image-tags .registry-image-tag {
   padding: 2px 5px;
   line-height: 30px;
 }
-dl.registry-image-tags .registry-image-tag:after {
-  content: ' ';
-  white-space: pre;
-}
 .registry-image-tag {
-  border: 2px solid #337ab7;
-  border-radius: 7px;
-  padding: 3px 5px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
   white-space: nowrap;
-  background-color: #d4edfa;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  background-color: #fff;
 }
 a.registry-image-tag {
   color: inherit;
+  text-decoration: none;
+  width: 76px;
+  height: 22px;
+  display: block;
+  text-align: center;
+  padding: 0 2px;
 }
-.registry-image-tag a {
-  color: #999;
-  position: relative;
-  padding-left: 4px;
-  font-size: 12px;
-  top: 1px;
-}
-.registry-image-tag a:hover {
-  color: black;
+a.registry-image-tag:hover,
+a.registry-image-tag:focus {
+  color: inherit;
   text-decoration: none;
 }
 registry-imagestream-body a[ng-click] {
@@ -463,11 +460,10 @@ registry-imagestream-listing table {
 registry-imagestream-listing table tbody:hover {
   background-color: #d4edfa;
 }
-registry-imagestream-listing table tr.registry-listing-top td {
-  padding-bottom: 0px;
-}
-registry-imagestream-listing table tr.registry-listing-bottom td {
-  padding-top: 0px;
+registry-imagestream-listing table td.image-identifier div {
+  max-width: 200px;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 registry-imagestream-listing table tbody.open .listing-ct-panel .listing-ct-body {
   border-right: 1px solid #ccc;
@@ -478,39 +474,20 @@ registry-imagestream-listing table tbody.open tr.listing-ct-panel td div.listing
 registry-imagestream-listing table thead th {
   border-top: none;
 }
-registry-imagestream-listing table tr.listing-ct-item {
-  border-left: 20px solid transparent;
-  border-top: none;
-  border-bottom: none;
+registry-imagestream-listing table tr.listing-ct-item td {
+  padding-bottom: 10px;
 }
-registry-imagestream-listing table tr.listing-ct-item td.registry-tag-label {
-  vertical-align: top;
-  background: linear-gradient(90deg, transparent 10px, #337ab7 10px, #337ab7 12px, transparent 12px);
-  padding-left: 0px;
-}
-registry-imagestream-listing table tr.listing-ct-item td.listing-ct-toggle:hover + td.registry-tag-label {
-  background-color: #ededed;
-}
-registry-imagestream-listing table tbody.first tr.registry-listing-top td {
-  padding-top: 20px;
-}
-registry-imagestream-listing table tbody.last tr.listing-ct-item.registry-listing-top td.registry-tag-label {
-  background-size: 100% 20px;
-  background-repeat: no-repeat;
+registry-imagestream-listing table tr.listing-ct-item td tt {
+  color: inherit;
 }
 registry-imagestream-listing table tr.registry-listing-imagestream-item {
   border-top: 1px solid #eeeeee;
 }
 registry-imagestream-listing table tr.registry-listing-imagestream-item th,
 registry-imagestream-listing table tr.registry-listing-imagestream-item td {
-  border-bottom: 2px solid #337ab7;
+  border-bottom: 2px solid #ccc;
   font-size: 14px;
   padding-bottom: 5px;
-}
-registry-imagestream-listing table tr.listing-ct-item tt {
-  color: #888;
-  word-break: break-all;
-  display: block;
 }
 registry-image-layers {
   border: 1px solid #d1d1d1;

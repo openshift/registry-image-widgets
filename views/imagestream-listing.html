@@ -2,7 +2,8 @@
     <thead>
         <tr>
             <th class="listing-ct-toggle"></th>
-            <th translate="yes" width="20%">Tags</th>
+            <th translate="yes" width="20%">Tag</th>
+            <th translate="yes">Identifier</th>
             <th translate="yes">Originates From</th>
             <th translate="yes">Last Updated</th>
         </tr>
@@ -33,14 +34,14 @@
     <tbody ng-repeat="tag in imagestreamTags(stream) | orderBy : 'tag.name'"
            data-id="{{ stream.metadata.namespace + '/' + stream.metadata.name + ':' + tag.name }}"
            ng-class="{open: imagestreamExpanded(stream, tag), last: $last, first: $first}">
-        <tr ng-click="imagestreamActivate(stream, tag, $event)" class="listing-ct-item registry-listing-top">
-            <td ng-click="imagestreamToggle(stream, tag, $event)" class="listing-ct-toggle" rowspan="2">
+        <tr ng-click="imagestreamActivate(stream, tag, $event)" class="listing-ct-item registry-listing">
+            <td ng-click="imagestreamToggle(stream, tag, $event)" class="listing-ct-toggle">
                 <i class="fa fa-fw"></i>
             </td>
-            <td class="registry-tag-label" rowspan="2">
-                <a class="registry-image-tag" ng-href="{{ imagestreamPath(stream, tag) }}">:{{ tag.name }}</a>
+            <td>
+                <a class="registry-image-tag" ng-href="{{ imagestreamPath(stream, tag) }}" title="{{tag.name }}">{{ tag.name }}</a>
             </td>
-            <td colspan="2" class="container">
+            <td class="image-identifier">
                 <div class="row" ng-init="annotations = stream.metadata.annotations">
                     <div class="col col-xs-12" ng-if="!tag.status">
                         <div ng-if="annotations['openshift.io/image.dockerRepositoryCheck']">
@@ -56,14 +57,12 @@
                     </div>
                     <div class="col col-xs-12" ng-if="tag.status">
                         <span ng-if="tag.status.items.length &amp;&amp; tag.status.items[0].image">
-                            <tt>{{tag.status.items[0].image}}</tt>
+                            <tt title="{{tag.status.items[0].image}}">{{tag.status.items[0].image}}</tt>
                         </span>
                         <span ng-if="!tag.status.items.length"><em translate="yes">none</em></span>
                     </div>
                 </div>
             </td>
-        </tr>
-        <tr ng-click="imagestreamActivate(stream, tag, $event)" class="listing-ct-item registry-listing-bottom">
             <td ng-init="name = imagestreamTagFromName(stream, tag.spec.from)">
                 <div ng-if="!name"><em>pushed image</em></div>
                 <div ng-if="name" title="{{tag.spec.from.name}}">
