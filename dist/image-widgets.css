@@ -397,6 +397,9 @@ dl.registry-image-tags .registry-image-tag {
   padding: 2px 5px;
   line-height: 30px;
 }
+dd.indentifier {
+  word-break: break-all;
+}
 .registry-image-tag {
   border: 1px solid #ccc;
   border-radius: 2px;
@@ -408,11 +411,17 @@ dl.registry-image-tags .registry-image-tag {
 a.registry-image-tag {
   color: inherit;
   text-decoration: none;
-  width: 76px;
+  max-width: 76px;
   height: 22px;
   display: block;
   text-align: center;
   padding: 0 2px;
+  margin-left: 2px;
+}
+@media (max-width: 768px) {
+  a.registry-image-tag {
+    max-width: 50px;
+  }
 }
 a.registry-image-tag:hover,
 a.registry-image-tag:focus {
@@ -430,6 +439,7 @@ registry-image-pull code,
 registry-imagestream-push code {
   display: block;
   white-space: pre;
+  overflow-x: auto;
 }
 registry-image-pull code em,
 registry-imagestream-push code em,
@@ -460,10 +470,17 @@ registry-imagestream-listing table {
 registry-imagestream-listing table tbody:hover {
   background-color: #d4edfa;
 }
-registry-imagestream-listing table td.image-identifier div {
-  max-width: 200px;
+registry-imagestream-listing table td.image-identifier {
+  max-width: 0;
+  width: 50%;
+}
+registry-imagestream-listing table td.image-identifier div.col {
+  max-width: 250px;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+registry-imagestream-listing table td.image-identifier div.col tt {
+  color: inherit;
 }
 registry-imagestream-listing table tbody.open .listing-ct-panel .listing-ct-body {
   border-right: 1px solid #ccc;
@@ -476,9 +493,6 @@ registry-imagestream-listing table thead th {
 }
 registry-imagestream-listing table tr.listing-ct-item td {
   padding-bottom: 10px;
-}
-registry-imagestream-listing table tr.listing-ct-item td tt {
-  color: inherit;
 }
 registry-imagestream-listing table tr.registry-listing-imagestream-item {
   border-top: 1px solid #eeeeee;

@@ -10,7 +10,10 @@ dl.registry-image-tags {
         padding: 2px 5px;
         line-height: 30px;
     }
+}
 
+dd.indentifier {
+    word-break: break-all;
 }
 
 .registry-image-tag {
@@ -25,11 +28,18 @@ dl.registry-image-tags {
 a.registry-image-tag {
     color: inherit;
     text-decoration: none;
-    width: 76px;
+    max-width: 76px;
     height: 22px;
     display: block;
     text-align: center;
     padding: 0 2px;
+    margin-left: 2px;
+}
+
+@media (max-width: @screen-sm-min) {
+    a.registry-image-tag {
+        max-width: 50px;
+    }
 }
 
 a.registry-image-tag:hover,
@@ -49,14 +59,14 @@ registry-imagestream-push {
     display: block;
 
     code {
-	display: block;
+        display: block;
         white-space: pre;
-
-    	em, span.placeholder {
+        overflow-x: auto;
+        em, span.placeholder {
             font-weight: bold;
             font-style: normal;
             color: #888;
-	}
+        }
     }
 
     .fa-info-circle {
@@ -85,11 +95,16 @@ registry-imagestream-listing table {
     }
 
     td.image-identifier {
-
-        div {
-            max-width: 200px;
+        max-width: 0;
+        width: 50%;
+        div.col {
+            max-width: 250px;
             text-overflow: ellipsis;
             overflow: hidden;
+
+            tt {
+                    color: inherit;
+                }
         }
     }
 
@@ -109,10 +124,6 @@ registry-imagestream-listing table {
 
     tr.listing-ct-item td {
         padding-bottom: 10px;
-    }
-
-    tr.listing-ct-item td tt {
-        color: inherit;
     }
 
     tr.registry-listing-imagestream-item {
