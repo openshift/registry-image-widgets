@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 15);
+/******/ 	return __webpack_require__(__webpack_require__.s = 16);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -522,6 +522,18 @@ angular.module('registryUI.images', [
     }
 ])
 
+.directive('registryAnnotations', [
+    function() {
+        return {
+            restrict: 'E',
+            scope: {
+                annotations: '=',
+            },
+            templateUrl: 'registry-image-widgets/views/annotations.html',
+        };
+    }
+])
+
 .directive('registryImagestreamMeta', [
     function(imageDockerConfig) {
         return {
@@ -740,6 +752,20 @@ angular.module('registryUI.images', [
 var angular=window.angular,ngModule;
 try {ngModule=angular.module(["ng"])}
 catch(e){ngModule=angular.module("ng",[])}
+var v1="<dt ng-if=\"annotations\" translate>Annotations</dt>\n<dd ng-repeat=\"(name, value) in annotations\">{{name}}: {{value}}</dd>\n";
+var id1="registry-image-widgets/views/annotations.html";
+var inj=angular.element(window.document).injector();
+if(inj){inj.get("$templateCache").put(id1,v1);}
+else{ngModule.run(["$templateCache",function(c){c.put(id1,v1)}]);}
+module.exports=v1;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+var angular=window.angular,ngModule;
+try {ngModule=angular.module(["ng"])}
+catch(e){ngModule=angular.module("ng",[])}
 var v1="<dl class=\"dl-horizontal left\">\n<dt ng-if=\"labels.name\" translate>Name</dt>\n<dd ng-if=\"labels.name\">{{ labels.name }}</dd>\n<dt ng-if=\"labels.summary\" translate>Summary</dt>\n<dd ng-if=\"labels.summary\">{{ labels.summary }}</dd>\n<dt ng-if=\"labels.description\" translate>Description</dt>\n<dd ng-if=\"labels.description\">{{ labels.description }}</dd>\n<dt ng-if=\"labels.url\" translate>Source URL</dt>\n<dd ng-if=\"labels.url\">\n<a href=\"labels.url\"><i class=\"fa fa-external-link\"></i> {{ labels.url }}</a>\n</dd>\n<dt translate>Author</dt>\n<dd ng-if=\"config.author\">{{config.author}}</dd>\n<dd ng-if=\"!config.author && image.dockerImageMetadata.Author\">{{image.dockerImageMetadata.Author}}</dd>\n<dd ng-if=\"!config.author && !image.dockerImageMetadata.Author\"><em translate>Unknown</em></dd>\n<dt ng-if=\"labels['build-date'] || layers[0].v1Compatibility.created || image.dockerImageMetadata.Created\" translate>Built</dt>\n<dd ng-if=\"labels['build-date']\" title=\"{{labels['build-date']}}\">{{ labels['build-date'] | dateRelative}}</dd>\n<dd ng-if=\"!labels['build-date'] && layers[0].v1Compatibility.created\" title=\"{{layers[0].v1Compatibility.created}}\">{{ layers[0].v1Compatibility.created | dateRelative}}</dd>\n<dd ng-if=\"!labels['build-date'] && !layers[0].v1Compatibility.created && image.dockerImageMetadata.Created\" title=\"{{image.dockerImageMetadata.Created}}\">{{image.dockerImageMetadata.Created | dateRelative}}</dd>\n<dt translate>Digest</dt>\n<dd class=\"indentifier\"><tt>{{ image.metadata.name }}</tt></dd>\n<dt ng-if-start=\"config.Image\" translate>Identifier</dt>\n<dd class=\"indentifier\" ng-if-end><tt>{{ config.Image }}</tt></dd>\n</dl>\n<dl class=\"registry-image-tags\" ng-if=\"names\">\n<dt translate>Tags</dt>\n<dd><span class=\"registry-image-tag\" ng-repeat=\"name in names\">{{name}}</span></dd>\n</dl>\n";
 var id1="registry-image-widgets/views/image-body.html";
 var inj=angular.element(window.document).injector();
@@ -748,7 +774,7 @@ else{ngModule.run(["$templateCache",function(c){c.put(id1,v1)}]);}
 module.exports=v1;
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
 var angular=window.angular,ngModule;
@@ -762,7 +788,7 @@ else{ngModule.run(["$templateCache",function(c){c.put(id1,v1)}]);}
 module.exports=v1;
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports) {
 
 var angular=window.angular,ngModule;
@@ -776,13 +802,13 @@ else{ngModule.run(["$templateCache",function(c){c.put(id1,v1)}]);}
 module.exports=v1;
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports) {
 
 var angular=window.angular,ngModule;
 try {ngModule=angular.module(["ng"])}
 catch(e){ngModule=angular.module("ng",[])}
-var v1="<div>\n<dl class=\"dl-horizontal left\">\n<dt ng-if=\"labels\" translate>Labels</dt>\n<dd ng-repeat=\"(name, value) in labels\" ng-show=\"name != 'description' && name != 'name'\">\n<tt>{{name}}={{value}}</tt>\n</dd>\n<dt ng-if=\"config.OnBuild.length\" translate>On Build</dt>\n<dd ng-repeat=\"line in config.OnBuild\"><tt>{{line}}</tt></dd>\n<dt ng-if=\"image.metadata.annotations\" translate>Annotations</dt>\n<dd ng-repeat=\"(name, value) in image.metadata.annotations\">{{name}}: {{value}}</dd>\n<dt translate>Docker Version</dt>\n<dd>{{image.dockerImageMetadata.DockerVersion}}</dd>\n</dl>\n</div>\n";
+var v1="<div>\n<dl class=\"dl-horizontal left\">\n<dt ng-if=\"labels\" translate>Labels</dt>\n<dd ng-repeat=\"(name, value) in labels\" ng-show=\"name != 'description' && name != 'name'\">\n<tt>{{name}}={{value}}</tt>\n</dd>\n<dt ng-if=\"config.OnBuild.length\" translate>On Build</dt>\n<dd ng-repeat=\"line in config.OnBuild\"><tt>{{line}}</tt></dd>\n<registry-annotations annotations=\"image.metadata.annotations\"></registry-annotations>\n<dt translate>Docker Version</dt>\n<dd>{{image.dockerImageMetadata.DockerVersion}}</dd>\n</dl>\n</div>\n";
 var id1="registry-image-widgets/views/image-meta.html";
 var inj=angular.element(window.document).injector();
 if(inj){inj.get("$templateCache").put(id1,v1);}
@@ -790,7 +816,7 @@ else{ngModule.run(["$templateCache",function(c){c.put(id1,v1)}]);}
 module.exports=v1;
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports) {
 
 var angular=window.angular,ngModule;
@@ -804,7 +830,7 @@ else{ngModule.run(["$templateCache",function(c){c.put(id1,v1)}]);}
 module.exports=v1;
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports) {
 
 var angular=window.angular,ngModule;
@@ -818,7 +844,7 @@ else{ngModule.run(["$templateCache",function(c){c.put(id1,v1)}]);}
 module.exports=v1;
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports) {
 
 var angular=window.angular,ngModule;
@@ -832,13 +858,13 @@ else{ngModule.run(["$templateCache",function(c){c.put(id1,v1)}]);}
 module.exports=v1;
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports) {
 
 var angular=window.angular,ngModule;
 try {ngModule=angular.module(["ng"])}
 catch(e){ngModule=angular.module("ng",[])}
-var v1="<dl class=\"dl-horizontal left\">\n<dt ng-if=\"imagestream.metadata.annotations\" translate>Annotations</dt>\n<dd ng-repeat=\"(name, value) in imagestream.metadata.annotations\">{{name}}: {{value}}</dd>\n</dl>\n";
+var v1="<dl class=\"dl-horizontal left\">\n<registry-annotations annotations=\"imagestream.metadata.annotations\"></registry-annotations>\n</dl>\n";
 var id1="registry-image-widgets/views/imagestream-meta.html";
 var inj=angular.element(window.document).injector();
 if(inj){inj.get("$templateCache").put(id1,v1);}
@@ -846,7 +872,7 @@ else{ngModule.run(["$templateCache",function(c){c.put(id1,v1)}]);}
 module.exports=v1;
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports) {
 
 var angular=window.angular,ngModule;
@@ -860,7 +886,7 @@ else{ngModule.run(["$templateCache",function(c){c.put(id1,v1)}]);}
 module.exports=v1;
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(4);
@@ -871,13 +897,14 @@ __webpack_require__(0);
 __webpack_require__(1);
 __webpack_require__(6);
 __webpack_require__(7);
-__webpack_require__(9);
 __webpack_require__(8);
 __webpack_require__(10);
+__webpack_require__(9);
 __webpack_require__(11);
 __webpack_require__(12);
 __webpack_require__(13);
-module.exports = __webpack_require__(14);
+__webpack_require__(14);
+module.exports = __webpack_require__(15);
 
 
 /***/ })

@@ -19,6 +19,7 @@ module.exports = {
             srcdir + "layers.js",
             srcdir + "images.less",
             srcdir + "layers.less",
+            srcdir + "views/annotations.html",
             srcdir + "views/image-body.html",
             srcdir + "views/image-config.html",
             srcdir + "views/image-meta.html",
