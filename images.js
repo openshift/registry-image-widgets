@@ -288,6 +288,18 @@ angular.module('registryUI.images', [
     }
 ])
 
+.directive('registryAnnotations', [
+    function() {
+        return {
+            restrict: 'E',
+            scope: {
+                annotations: '=',
+            },
+            templateUrl: 'registry-image-widgets/views/annotations.html',
+        };
+    }
+])
+
 .directive('registryImagestreamMeta', [
     function(imageDockerConfig) {
         return {

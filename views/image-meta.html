@@ -6,8 +6,7 @@
         </dd>
         <dt ng-if="config.OnBuild.length" translate>On Build</dt>
         <dd ng-repeat="line in config.OnBuild"><tt>{{line}}</tt></dd>
-        <dt ng-if="image.metadata.annotations" translate>Annotations</dt>
-        <dd ng-repeat="(name, value) in image.metadata.annotations">{{name}}: {{value}}</dd>
+        <registry-annotations annotations="image.metadata.annotations"></registry-annotations>
         <dt translate>Docker Version</dt>
         <dd>{{image.dockerImageMetadata.DockerVersion}}</dd>
     </dl>

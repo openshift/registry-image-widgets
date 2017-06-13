@@ -1,4 +1,3 @@
 <dl class="dl-horizontal left">
-    <dt ng-if="imagestream.metadata.annotations" translate>Annotations</dt>
-    <dd ng-repeat="(name, value) in imagestream.metadata.annotations">{{name}}: {{value}}</dd>
+    <registry-annotations annotations="imagestream.metadata.annotations"></registry-annotations>
 </dl>
