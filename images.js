@@ -314,8 +314,9 @@ angular.module('registryUI.images', [
 
 .directive('registryImagestreamListing', [
     'imagestreamTags',
+    'imagestreamTagFromName',
     '$location',
-    function(imagestreamTags, $location) {
+    function(imagestreamTags, imagestreamTagFromName, $location) {
         return {
             restrict: 'E',
             scope: {
@@ -327,6 +328,7 @@ angular.module('registryUI.images', [
 
                 scope.imagestreamTags = imagestreamTags;
                 scope.imagestreamPath = scope.imagestreamFunc();
+                scope.imagestreamTagFromName = imagestreamTagFromName;
 
                 /* Called when someone clicks on a row */
                 scope.imagestreamActivate = function imagestreamActivate(imagestream, tag, ev) {
