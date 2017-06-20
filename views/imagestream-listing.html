@@ -64,7 +64,7 @@
                 </div>
             </td>
             <td ng-init="name = imagestreamTagFromName(stream, tag.spec.from)">
-                <div ng-if="!name"><em>pushed image</em></div>
+                <div ng-if="!name || !tag.spec.from"><em>pushed image</em></div>
                 <div ng-if="name" title="{{tag.spec.from.name}}">
                     <span ng-if="!name[0]">{{tag.spec.from.name}}</span>
                     <span ng-if="name[0]">
