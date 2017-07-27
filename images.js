@@ -312,65 +312,158 @@ angular.module('registryUI.images', [
     }
 ])
 
-.directive('registryImagestreamListing', [
+.factory('registryImageListingFunc', [
     'imagestreamTags',
     'imagestreamTagFromName',
     '$location',
     function(imagestreamTags, imagestreamTagFromName, $location) {
+        return function(scope, element, attrs) {
+            scope.imagestreamTags = imagestreamTags;
+            scope.imagestreamPath = scope.imagestreamFunc();
+            scope.imageByTag = scope.imageByTagFunc();
+            scope.imageTagNames = scope.imageTagNamesFunc();
+            scope.sharedImages = scope.sharedImagesFunc();
+            scope.imagestreamTagFromName = imagestreamTagFromName;
+
+            /* Called when someone clicks on a row */
+            scope.imagestreamActivate = function imagestreamActivate(imagestream, tag, ev) {
+                var event;
+                if (scope.imagestreamExpanded(imagestream, tag)) {
+                    scope.imagestreamToggle(imagestream, tag, ev);
+                } else {
+                    event = scope.$emit("activate", imagestream, tag, ev);
+                    if (!event.defaultPrevented && scope.imagestreamPath)
+                        $location.path(scope.imagestreamPath(imagestream, tag));
+                }
+                ev.preventDefault();
+                ev.stopPropagation();
+            };
+
+            /* A list of all the expanded rows */
+            var expanded = { };
+
+            function identifier(imagestream, tag) {
+                var id = imagestream.metadata.namespace + "/" + imagestream.metadata.name;
+                if (tag)
+                    id += "/" + tag.name;
+                return id;
+            }
+
+            /* Called to check the state of an expanded row */
+            scope.imagestreamExpanded = function imagestreamExpanded(imagestream, tag) {
+                return identifier(imagestream, tag) in expanded;
+            };
+
+            /* Called when someone toggles a row */
+            scope.imagestreamToggle = function imagestreamToggle(imagestream, tag, ev) {
+                var id = identifier(imagestream, tag);
+                if (id in expanded)
+                    delete expanded[id];
+                else
+                    expanded[id] = true;
+                ev.stopPropagation();
+            };
+        };
+    }
+])
+
+.directive('registryImagestreamListing', [
+    'registryImageListingFunc',
+    function(imageListingFunc) {
+        return {
+            restrict: 'E',
+            scope: {
+                imagestreams: '=',
+                imagestreamFunc: '&imagestreamPath',
+                settings: '=',
+                actions: '=',
+                imageByTagFunc: '&imageByTag',
+                imageTagNamesFunc: '&imageTagNames',
+                sharedImagesFunc: '&sharedImages'
+            },
+            templateUrl: 'registry-image-widgets/views/imagestream-listing.html',
+            link: imageListingFunc
+        };
+    }
+])
+
+.directive('registryImageListing', [
+    'registryImageListingFunc',
+    function(imageListingFunc) {
         return {
             restrict: 'E',
             scope: {
                 imagestream: '=',
                 imagestreamFunc: '&imagestreamPath',
+                settings: '=',
+                actions: '=',
+                imageByTagFunc: '&imageByTag',
+                imageTagNamesFunc: '&imageTagNames',
+                sharedImagesFunc: '&sharedImages'
             },
-            templateUrl: 'registry-image-widgets/views/imagestream-listing.html',
+            templateUrl: 'registry-image-widgets/views/image-listing.html',
+            link: imageListingFunc
+        };
+    }
+])
+
+.directive('registryImagePanel', [
+    'imageDockerConfig',
+    'imageLayers',
+    function(imageDockerConfig, imageLayers) {
+        return {
+            restrict: 'E',
+            transclude: true,
+            scope: true,
+            templateUrl: 'registry-image-widgets/views/image-panel.html',
             link: function(scope, element, attrs) {
-
-                scope.imagestreamTags = imagestreamTags;
-                scope.imagestreamPath = scope.imagestreamFunc();
-                scope.imagestreamTagFromName = imagestreamTagFromName;
-
-                /* Called when someone clicks on a row */
-                scope.imagestreamActivate = function imagestreamActivate(imagestream, tag, ev) {
-                    var event;
-                    if (scope.imagestreamExpanded(imagestream, tag)) {
-                        scope.imagestreamToggle(imagestream, tag, ev);
-                    } else {
-                        event = scope.$emit("activate", imagestream, tag, ev);
-                        if (!event.defaultPrevented && scope.imagestreamPath)
-                            $location.path(scope.imagestreamPath(imagestream, tag));
+                var tab = 'main';
+                scope.tab = function(name, ev) {
+                    if (ev) {
+                        tab = name;
+                        ev.stopPropagation();
                     }
-                    ev.preventDefault();
+                    return tab === name;
                 };
 
-                /* A list of all the expanded rows */
-                var expanded = { };
+                scope.$watch(function() {
+                    scope.image = scope.imageByTag(scope.tag);
+                });
 
-                function identifier(imagestream, tag) {
-                    var id = imagestream.metadata.namespace + "/" + imagestream.metadata.name;
-                    if (tag)
-                        id += "/" + tag.name;
-                    return id;
-                }
+                scope.$watch("image", function(image) {
+                    if (scope.image) {
+                        scope.layers = imageLayers(scope.image);
+                        scope.config = imageDockerConfig(scope.image);
+                        scope.labels = scope.config.Labels;
+                        if (scope.imageTagNames)
+                            scope.names = scope.imageTagNames(scope.image);
+                    }
+                });
+            }
+        };
+    }
+])
 
-                /* Called to check the state of an expanded row */
-                scope.imagestreamExpanded = function imagestreamExpanded(imagestream, tag) {
-                    return identifier(imagestream, tag) in expanded;
+.directive('registryImagestreamPanel', [
+    function() {
+        return {
+            restrict: 'E',
+            transclude: true,
+            scope: true,
+            templateUrl: 'registry-image-widgets/views/imagestream-panel.html',
+            link: function(scope, element, attrs) {
+                var tab = 'main';
+                scope.tab = function(name, ev) {
+                    if (ev) {
+                        tab = name;
+                        ev.stopPropagation();
+                    }
+                    return tab === name;
                 };
-
-                /* Called when someone toggles a row */
-                scope.imagestreamToggle = function imagestreamToggle(imagestream, tag, ev) {
-                    var id = identifier(imagestream, tag);
-                    if (id in expanded)
-                        delete expanded[id];
-                    else
-                        expanded[id] = true;
-                    ev.stopPropagation();
-                };
-
             }
         };
     }
 ]);
+
 
 }());

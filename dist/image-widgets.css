@@ -375,6 +375,21 @@ table.listing-ct > caption a {
 tbody tr.listing-ct-noexpand {
   cursor: default;
 }
+/* Fix up nav-tabs-pf to work properly */
+.nav-tabs-pf > li:first-child a {
+  margin-left: 0px !important;
+  padding-left: 15px !important;
+}
+.nav-tabs-pf > li a:before {
+  right: 0px !important;
+}
+.nav-tabs-pf > li > a:active:before,
+.nav-tabs-pf > li > a:focus:before,
+.nav-tabs-pf > li > a:hover:before,
+.nav-tabs-pf > li.active a:before {
+  height: 3px;
+  left: 0px;
+}
 dl.registry-image-tags dt {
   line-height: 30px;
 }
@@ -398,10 +413,14 @@ a.registry-image-tag {
   text-decoration: none;
   max-width: 76px;
   height: 22px;
-  display: block;
+  display: inline;
   text-align: center;
-  padding: 0 2px;
+  padding: 0 5px;
   margin-left: 2px;
+  font-weight: normal;
+  -webkit-border-radius: 3;
+  -moz-border-radius: 3;
+  border-radius: 3px;
 }
 @media (max-width: 768px) {
   a.registry-image-tag {
@@ -448,45 +467,93 @@ registry-imagestream-push .fa-info-circle {
 /* ----------------------------------------------------------------------
  * Imagestream listing styles
  */
-registry-imagestream-listing table {
+registry-imagestream-listing table.listing-ct,
+registry-image-listing table.listing-ct {
   max-width: 2000px;
   min-width: 85%;
 }
-registry-imagestream-listing table tbody:hover {
+registry-imagestream-listing table.listing-ct tbody:hover,
+registry-image-listing table.listing-ct tbody:hover {
   background-color: #d4edfa;
 }
-registry-imagestream-listing table td.image-identifier {
+registry-imagestream-listing table.listing-ct td.image-identifier,
+registry-image-listing table.listing-ct td.image-identifier {
   max-width: 0;
-  width: 50%;
 }
-registry-imagestream-listing table td.image-identifier div.col {
+registry-imagestream-listing table.listing-ct td.image-identifier div.col,
+registry-image-listing table.listing-ct td.image-identifier div.col {
   max-width: 250px;
   text-overflow: ellipsis;
   overflow: hidden;
 }
-registry-imagestream-listing table td.image-identifier div.col tt {
+registry-imagestream-listing table.listing-ct td.image-identifier div.col tt,
+registry-image-listing table.listing-ct td.image-identifier div.col tt {
   color: inherit;
 }
-registry-imagestream-listing table tbody.open .listing-ct-panel .listing-ct-body {
+registry-imagestream-listing table.listing-ct tbody.open .listing-ct-panel .listing-ct-body,
+registry-image-listing table.listing-ct tbody.open .listing-ct-panel .listing-ct-body {
   border-right: 1px solid #ccc;
 }
-registry-imagestream-listing table tbody.open tr.listing-ct-panel td div.listing-ct-head {
+registry-imagestream-listing table.listing-ct tbody.open tr.listing-ct-panel td div.listing-ct-head,
+registry-image-listing table.listing-ct tbody.open tr.listing-ct-panel td div.listing-ct-head {
   border-right: 1px solid #ccc;
 }
-registry-imagestream-listing table thead th {
+registry-imagestream-listing table.listing-ct thead th,
+registry-image-listing table.listing-ct thead th {
   border-top: none;
 }
-registry-imagestream-listing table tr.listing-ct-item td {
+registry-imagestream-listing table.listing-ct tr.listing-ct-item td,
+registry-image-listing table.listing-ct tr.listing-ct-item td {
   padding-bottom: 10px;
 }
-registry-imagestream-listing table tr.registry-listing-imagestream-item {
+registry-imagestream-listing table.listing-ct tr.registry-listing-imagestream-item,
+registry-image-listing table.listing-ct tr.registry-listing-imagestream-item {
   border-top: 1px solid #eeeeee;
 }
-registry-imagestream-listing table tr.registry-listing-imagestream-item th,
-registry-imagestream-listing table tr.registry-listing-imagestream-item td {
+registry-imagestream-listing table.listing-ct tr.registry-listing-imagestream-item th,
+registry-image-listing table.listing-ct tr.registry-listing-imagestream-item th,
+registry-imagestream-listing table.listing-ct tr.registry-listing-imagestream-item td,
+registry-image-listing table.listing-ct tr.registry-listing-imagestream-item td {
   border-bottom: 2px solid #ccc;
   font-size: 14px;
   padding-bottom: 5px;
+}
+registry-imagestream-listing table.listing-ct .inline-tabs,
+registry-image-listing table.listing-ct .inline-tabs {
+  width: 100%;
+  max-height: 400px;
+  overflow: auto;
+}
+registry-imagestream-listing table.listing-ct .inline-tabs table,
+registry-image-listing table.listing-ct .inline-tabs table {
+  margin-top: 0;
+  width: 100%;
+}
+registry-imagestream-listing table.listing-ct .inline-tabs tr.listing-ct-item,
+registry-image-listing table.listing-ct .inline-tabs tr.listing-ct-item {
+  background-color: unset;
+  border-bottom: 1px solid #eeeeee;
+  border-top: none;
+  border-right: none;
+  border-left: none;
+}
+registry-imagestream-listing table.listing-ct tbody,
+registry-image-listing table.listing-ct tbody {
+  border-right: 1px solid #eeeeee;
+  border-left: 1px solid #eeeeee;
+}
+registry-imagestream-listing table.listing-ct tbody tr.listing-ct-item td,
+registry-image-listing table.listing-ct tbody tr.listing-ct-item td,
+registry-imagestream-listing table.listing-ct tbody tr.listing-ct-item th,
+registry-image-listing table.listing-ct tbody tr.listing-ct-item th {
+  border: none;
+}
+registry-imagestream-listing table.listing-ct registry-image-listing .listing-ct-toggle,
+registry-image-listing table.listing-ct registry-image-listing .listing-ct-toggle {
+  display: none;
+}
+registry-image-listing a.registry-image-tag {
+  display: block;
 }
 registry-image-layers {
   border: 1px solid #d1d1d1;

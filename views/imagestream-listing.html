@@ -2,28 +2,35 @@
     <thead>
         <tr>
             <th class="listing-ct-toggle"></th>
-            <th translate="yes" width="20%">Tag</th>
-            <th translate="yes">Identifier</th>
-            <th translate="yes">From</th>
-            <th translate="yes">Last Updated</th>
+            <th translate="yes" width="20%">Name</th>
+            <th translate="yes">Tags</th>
+            <th translate="yes">Repository</th>
         </tr>
     </thead>
-    <tbody ng-repeat-start="(link, stream) in (imagestreams || { 'one': imagestream }) track by link"
+    <tbody ng-repeat="(link, imagestream) in imagestreams track by link | orderBy : 'link'"
            ng-if="imagestreams"
-           data-id="{{ stream.metadata.namespace + '/' + stream.metadata.name }}"
+           data-id="{{ imagestream.metadata.namespace + '/' + imagestream.metadata.name }}"
            class="active" ng-class="{open: imagestreamExpanded(imagestream)}">
         <tr ng-click="imagestreamActivate(imagestream, null, $event)" class="listing-ct-item imagestream-item">
             <td ng-click="imagestreamToggle(imagestream, null, $event)" class="listing-ct-toggle">
                 <i class="fa fa-fw"></i>
             </td>
-            <th colspan="4">
-                {{ stream.metadata.namespace + '/' + stream.metadata.name }}
-                <div ng-repeat="statustags in stream.status.tags">
+            <th>
+                {{ imagestream.metadata.namespace + '/' + imagestream.metadata.name }}
+                <div ng-repeat="statustags in imagestream.status.tags">
                     <span ng-repeat="condition in statustags.conditions"
                           ng-if="condition.type == 'ImportSuccess' &amp;&amp; condition.status == 'False'"
                           class="pficon pficon-warning-triangle-o"></span>
                 </div>
             </th>
+            <td ng-init="tag_count = imagestreamTags(imagestream).length">
+                <a ng-repeat="tag in imagestreamTags(imagestream) | orderBy : 'tag.name' | limitTo: 4" class="registry-image-tag" ng-click="imagestreamActivate(imagestream, tag, $event)" title="{{tag.name }}">{{ tag.name }}</a>
+                <span ng-if="tag_count > 4" translate-n="tag_count - 4" translate translate-plural="and {{ $count }} others">and {{ $count }} other</span>
+            </td>
+            <td>
+                  <span ng-if="!imageStream.status.dockerImageRepository && !imageStream.spec.dockerImageRepository"><em translate>unknown</em></span>
+                  <span ng-if="imageStream.status.dockerImageRepository || imageStream.spec.dockerImageRepository">{{imageStream.status.dockerImageRepository || imageStream.spec.dockerImageRepository}}</span>
+            </td>
         </tr>
         <tr class="listing-ct-panel" ng-if="imagestreamExpanded(imagestream)">
             <td colspan="4">
@@ -31,70 +38,9 @@
             </td>
         </tr>
     </tbody>
-    <tbody ng-repeat="tag in imagestreamTags(stream) | orderBy : 'tag.name'"
-           data-id="{{ stream.metadata.namespace + '/' + stream.metadata.name + ':' + tag.name }}"
-           ng-class="{open: imagestreamExpanded(stream, tag), last: $last, first: $first}">
-        <tr ng-click="imagestreamActivate(stream, tag, $event)" class="listing-ct-item registry-listing">
-            <td ng-click="imagestreamToggle(stream, tag, $event)" class="listing-ct-toggle">
-                <i class="fa fa-fw"></i>
-            </td>
-            <td>
-                <a class="registry-image-tag" ng-href="{{ imagestreamPath(stream, tag) }}" title="{{tag.name }}">{{ tag.name }}</a>
-            </td>
-            <td class="image-identifier">
-                <div class="row" ng-init="annotations = stream.metadata.annotations">
-                    <div class="col col-xs-12" ng-if="!tag.status">
-                        <div ng-if="annotations['openshift.io/image.dockerRepositoryCheck']">
-                            <span class="pficon pficon-warning-triangle-o" style="margin-right: 5px;"
-                                ng-attr-title="{{annotations['openshift.io/image.dockerRepositoryCheck']}}"></span>
-                            <span translate="yes">Unable to resolve</span>
-                        </div>
-                        <div ng-if="!annotations['openshift.io/image.dockerRepositoryCheck']">
-                            <span ng-if="!tag.spec.from" translate="yes">Not yet synced</span>
-                            <!-- We have no idea why in this case -->
-                            <span ng-if="tag.spec.from" translate="yes">Unresolved</span>
-                        </div>
-                    </div>
-                    <div class="col col-xs-12" ng-if="tag.status">
-                        <span ng-if="tag.status.items.length &amp;&amp; tag.status.items[0].image">
-                            <tt title="{{tag.status.items[0].image}}">{{tag.status.items[0].image}}</tt>
-                        </span>
-                        <span ng-if="!tag.status.items.length"><em translate="yes">none</em></span>
-                    </div>
-                </div>
-            </td>
-            <td ng-init="name = imagestreamTagFromName(stream, tag.spec.from)">
-                <div ng-if="!name || !tag.spec.from"><em>pushed image</em></div>
-                <div ng-if="name" title="{{tag.spec.from.name}}">
-                    <span ng-if="!name[0]">{{tag.spec.from.name}}</span>
-                    <span ng-if="name[0]">
-                        <span ng-if="name[0] === stream.metadata.name">{{name.qualified}}</span>
-                        <span ng-if="name[0] !== stream.metadata.name">
-                            <a ng-href="imagestreamPath({ metadata: { namespace: tag.spec.from.namespace, name: name[0] }})"><span ng-if="tag.spec.from.namespace &amp;&amp; tag.spec.from.namespace !== imageStream.metadata.namespace" >{{tag.spec.from.namespace}}/</span>{{tag.spec.from._imageStreamName}}</a -->{{name.delimiter}}{{name[1]}}
-                        </span>
-                    </span>
-                </div>
-            </td>
-            <td>
-                <div title="{{ tag.items[0].created }}">
-                    <span ng-if="tag.status.items.length &amp;&amp; tag.status.items[0].image" title="{{ tag.items[0].created }}">
-                        {{ tag.status.items[0].created | dateRelative }}
-                    </span>
-                </div>
-            </td>
-        </tr>
-        <tr class="listing-ct-panel" ng-if="imagestreamExpanded(stream, tag)" ng-repeat-end="">
-            <td colspan="4">
-                <registry-image-panel></registry-image-panel>
-            </td>
-        </tr>
-    </tbody>
-    <tbody data-ng-rubbish="" ng-if="0" ng-repeat-end="1">
-    </tbody>
     <thead class="listing-ct-empty" ng-if="!quiet">
         <tr>
-            <td colspan="4" ng-if="!failure && imagestreams" translate="yes">No image streams are present.</td>
-            <td colspan="4" ng-if="!failure && !imagestreams" translate="yes">No tags are present.</td>
+            <td colspan="4" ng-if="!failure && !imagestreams" translate="yes">No image streams are present.</td>
             <td colspan="4" ng-if="failure">{{failure}}</td>
         </tr>
     </thead>
