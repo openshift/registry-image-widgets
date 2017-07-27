@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 16);
+/******/ 	return __webpack_require__(__webpack_require__.s = 19);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -180,6 +180,35 @@ angular.module('registryUI.client', [ ])
 
 angular.module('registryUI.date', [])
 
+.provider("MomentLib", [
+    function() {
+        var self = this;
+
+        /* Until we come up with a good default implementation, must be provided */
+        self.MomentLibFactory = "globalMoment";
+
+        function load(injector, name) {
+            if (angular.isString(name))
+                return injector.get(name, "MomentLib");
+            else
+                return injector.invoke(name);
+        }
+
+        self.$get = [
+            "$injector",
+            function($injector) {
+                return load($injector, self.MomentLibFactory);
+            }
+        ];
+    }
+])
+
+.factory("globalMoment", [
+    function() {
+        return moment;
+    }
+])
+
 .factory('dateRefreshMinute', [
     "$rootScope",
     function($rootScope) {
@@ -203,12 +232,13 @@ angular.module('registryUI.date', [])
 ])
 
 .filter('dateRelative', [
+    "MomentLib",
     "dateRefreshMinute",
-    function() {
+    function(momentLib) {
         function dateRelative(timestamp) {
             if (!timestamp)
                 return timestamp;
-            return moment(timestamp).fromNow();
+            return momentLib(timestamp).fromNow();
         }
 
         /* When moment is not loaded fall back to simple behavior */
@@ -217,7 +247,7 @@ angular.module('registryUI.date', [])
         }
 
         dateRelative.$stateful = true;
-        if (typeof(moment) === 'function')
+        if (typeof(momentLib) === 'function')
             return dateRelative;
         else
             return dateAbsolute;
@@ -225,7 +255,6 @@ angular.module('registryUI.date', [])
 ]);
 
 }());
-
 
 
 /***/ }),
@@ -546,66 +575,159 @@ angular.module('registryUI.images', [
     }
 ])
 
-.directive('registryImagestreamListing', [
+.factory('registryImageListingFunc', [
     'imagestreamTags',
     'imagestreamTagFromName',
     '$location',
     function(imagestreamTags, imagestreamTagFromName, $location) {
+        return function(scope, element, attrs) {
+            scope.imagestreamTags = imagestreamTags;
+            scope.imagestreamPath = scope.imagestreamFunc();
+            scope.imageByTag = scope.imageByTagFunc();
+            scope.imageTagNames = scope.imageTagNamesFunc();
+            scope.sharedImages = scope.sharedImagesFunc();
+            scope.imagestreamTagFromName = imagestreamTagFromName;
+
+            /* Called when someone clicks on a row */
+            scope.imagestreamActivate = function imagestreamActivate(imagestream, tag, ev) {
+                var event;
+                if (scope.imagestreamExpanded(imagestream, tag)) {
+                    scope.imagestreamToggle(imagestream, tag, ev);
+                } else {
+                    event = scope.$emit("activate", imagestream, tag, ev);
+                    if (!event.defaultPrevented && scope.imagestreamPath)
+                        $location.path(scope.imagestreamPath(imagestream, tag));
+                }
+                ev.preventDefault();
+                ev.stopPropagation();
+            };
+
+            /* A list of all the expanded rows */
+            var expanded = { };
+
+            function identifier(imagestream, tag) {
+                var id = imagestream.metadata.namespace + "/" + imagestream.metadata.name;
+                if (tag)
+                    id += "/" + tag.name;
+                return id;
+            }
+
+            /* Called to check the state of an expanded row */
+            scope.imagestreamExpanded = function imagestreamExpanded(imagestream, tag) {
+                return identifier(imagestream, tag) in expanded;
+            };
+
+            /* Called when someone toggles a row */
+            scope.imagestreamToggle = function imagestreamToggle(imagestream, tag, ev) {
+                var id = identifier(imagestream, tag);
+                if (id in expanded)
+                    delete expanded[id];
+                else
+                    expanded[id] = true;
+                ev.stopPropagation();
+            };
+        };
+    }
+])
+
+.directive('registryImagestreamListing', [
+    'registryImageListingFunc',
+    function(imageListingFunc) {
+        return {
+            restrict: 'E',
+            scope: {
+                imagestreams: '=',
+                imagestreamFunc: '&imagestreamPath',
+                settings: '=',
+                actions: '=',
+                imageByTagFunc: '&imageByTag',
+                imageTagNamesFunc: '&imageTagNames',
+                sharedImagesFunc: '&sharedImages'
+            },
+            templateUrl: 'registry-image-widgets/views/imagestream-listing.html',
+            link: imageListingFunc
+        };
+    }
+])
+
+.directive('registryImageListing', [
+    'registryImageListingFunc',
+    function(imageListingFunc) {
         return {
             restrict: 'E',
             scope: {
                 imagestream: '=',
                 imagestreamFunc: '&imagestreamPath',
+                settings: '=',
+                actions: '=',
+                imageByTagFunc: '&imageByTag',
+                imageTagNamesFunc: '&imageTagNames',
+                sharedImagesFunc: '&sharedImages'
             },
-            templateUrl: 'registry-image-widgets/views/imagestream-listing.html',
+            templateUrl: 'registry-image-widgets/views/image-listing.html',
+            link: imageListingFunc
+        };
+    }
+])
+
+.directive('registryImagePanel', [
+    'imageDockerConfig',
+    'imageLayers',
+    function(imageDockerConfig, imageLayers) {
+        return {
+            restrict: 'E',
+            transclude: true,
+            scope: true,
+            templateUrl: 'registry-image-widgets/views/image-panel.html',
             link: function(scope, element, attrs) {
-
-                scope.imagestreamTags = imagestreamTags;
-                scope.imagestreamPath = scope.imagestreamFunc();
-                scope.imagestreamTagFromName = imagestreamTagFromName;
-
-                /* Called when someone clicks on a row */
-                scope.imagestreamActivate = function imagestreamActivate(imagestream, tag, ev) {
-                    var event;
-                    if (scope.imagestreamExpanded(imagestream, tag)) {
-                        scope.imagestreamToggle(imagestream, tag, ev);
-                    } else {
-                        event = scope.$emit("activate", imagestream, tag, ev);
-                        if (!event.defaultPrevented && scope.imagestreamPath)
-                            $location.path(scope.imagestreamPath(imagestream, tag));
+                var tab = 'main';
+                scope.tab = function(name, ev) {
+                    if (ev) {
+                        tab = name;
+                        ev.stopPropagation();
                     }
-                    ev.preventDefault();
+                    return tab === name;
                 };
 
-                /* A list of all the expanded rows */
-                var expanded = { };
+                scope.$watch(function() {
+                    scope.image = scope.imageByTag(scope.tag);
+                });
 
-                function identifier(imagestream, tag) {
-                    var id = imagestream.metadata.namespace + "/" + imagestream.metadata.name;
-                    if (tag)
-                        id += "/" + tag.name;
-                    return id;
-                }
+                scope.$watch("image", function(image) {
+                    if (scope.image) {
+                        scope.layers = imageLayers(scope.image);
+                        scope.config = imageDockerConfig(scope.image);
+                        scope.labels = scope.config.Labels;
+                        if (scope.imageTagNames)
+                            scope.names = scope.imageTagNames(scope.image);
+                    }
+                });
+            }
+        };
+    }
+])
 
-                /* Called to check the state of an expanded row */
-                scope.imagestreamExpanded = function imagestreamExpanded(imagestream, tag) {
-                    return identifier(imagestream, tag) in expanded;
+.directive('registryImagestreamPanel', [
+    function() {
+        return {
+            restrict: 'E',
+            transclude: true,
+            scope: true,
+            templateUrl: 'registry-image-widgets/views/imagestream-panel.html',
+            link: function(scope, element, attrs) {
+                var tab = 'main';
+                scope.tab = function(name, ev) {
+                    if (ev) {
+                        tab = name;
+                        ev.stopPropagation();
+                    }
+                    return tab === name;
                 };
-
-                /* Called when someone toggles a row */
-                scope.imagestreamToggle = function imagestreamToggle(imagestream, tag, ev) {
-                    var id = identifier(imagestream, tag);
-                    if (id in expanded)
-                        delete expanded[id];
-                    else
-                        expanded[id] = true;
-                    ev.stopPropagation();
-                };
-
             }
         };
     }
 ]);
+
 
 }());
 
@@ -765,7 +887,7 @@ module.exports=v1;
 var angular=window.angular,ngModule;
 try {ngModule=angular.module(["ng"])}
 catch(e){ngModule=angular.module("ng",[])}
-var v1="<dl class=\"dl-horizontal left\"> <dt ng-if=\"labels.name\" translate>Name</dt> <dd ng-if=\"labels.name\">{{ labels.name }}</dd> <dt ng-if=\"labels.summary\" translate>Summary</dt> <dd ng-if=\"labels.summary\">{{ labels.summary }}</dd> <dt ng-if=\"labels.description\" translate>Description</dt> <dd ng-if=\"labels.description\">{{ labels.description }}</dd> <dt ng-if=\"labels.url\" translate>Source URL</dt> <dd ng-if=\"labels.url\"> <a href=\"labels.url\"><i class=\"fa fa-external-link\"></i> {{ labels.url }}</a> </dd> <dt translate>Author</dt> <dd ng-if=\"config.author\">{{config.author}}</dd> <dd ng-if=\"!config.author && image.dockerImageMetadata.Author\">{{image.dockerImageMetadata.Author}}</dd> <dd ng-if=\"!config.author && !image.dockerImageMetadata.Author\"><em translate>Unknown</em></dd> <dt ng-if=\"labels['build-date'] || layers[0].v1Compatibility.created || image.dockerImageMetadata.Created\" translate>Built</dt> <dd ng-if=\"labels['build-date']\" title=\"{{labels['build-date']}}\">{{ labels['build-date'] | dateRelative}}</dd> <dd ng-if=\"!labels['build-date'] && layers[0].v1Compatibility.created\" title=\"{{layers[0].v1Compatibility.created}}\">{{ layers[0].v1Compatibility.created | dateRelative}}</dd> <dd ng-if=\"!labels['build-date'] && !layers[0].v1Compatibility.created && image.dockerImageMetadata.Created\" title=\"{{image.dockerImageMetadata.Created}}\">{{image.dockerImageMetadata.Created | dateRelative}}</dd> <dt translate>Digest</dt> <dd class=\"indentifier\"><tt>{{ image.metadata.name }}</tt></dd> <dt ng-if-start=\"config.Image\" translate>Identifier</dt> <dd class=\"indentifier\" ng-if-end><tt>{{ config.Image }}</tt></dd> </dl> <dl class=\"registry-image-tags\" ng-if=\"names\"> <dt translate>Tags</dt> <dd><span class=\"registry-image-tag\" ng-repeat=\"name in names\">{{name}}</span></dd> </dl>";
+var v1="<dl class=\"dl-horizontal left\"> <dt ng-if=\"labels.name\" translate>Name</dt> <dd ng-if=\"labels.name\">{{ labels.name }}</dd> <dt ng-if=\"labels.summary\" translate>Summary</dt> <dd ng-if=\"labels.summary\">{{ labels.summary }}</dd> <dt ng-if=\"labels.description\" translate>Description</dt> <dd ng-if=\"labels.description\">{{ labels.description }}</dd> <dt ng-if=\"labels.url\" translate>Source URL</dt> <dd ng-if=\"labels.url\"> <a href=\"labels.url\"><i class=\"fa fa-external-link\"></i> {{ labels.url }}</a> </dd> <dt translate>Author</dt> <dd ng-if=\"config.author\">{{config.author}}</dd> <dd ng-if=\"!config.author && image.dockerImageMetadata.Author\">{{image.dockerImageMetadata.Author}}</dd> <dd ng-if=\"!config.author && !image.dockerImageMetadata.Author\"><em translate>Unknown</em></dd> <dt ng-if=\"labels['build-date'] || layers[0].v1Compatibility.created || image.dockerImageMetadata.Created\" translate>Built</dt> <dd ng-if=\"labels['build-date']\" title=\"{{labels['build-date']}}\">{{ labels['build-date'] | dateRelative}}</dd> <dd ng-if=\"!labels['build-date'] && layers[0].v1Compatibility.created\" title=\"{{layers[0].v1Compatibility.created}}\">{{ layers[0].v1Compatibility.created | dateRelative}}</dd> <dd ng-if=\"!labels['build-date'] && !layers[0].v1Compatibility.created && image.dockerImageMetadata.Created\" title=\"{{image.dockerImageMetadata.Created}}\">{{image.dockerImageMetadata.Created | dateRelative}}</dd> <dt translate>Digest</dt> <dd class=\"indentifier\"><tt>{{ image.metadata.name }}</tt></dd> <dt ng-if-start=\"config.Image\" translate>Identifier</dt> <dd class=\"indentifier\" ng-if-end><tt>{{ config.Image }}</tt></dd> </dl> <dl class=\"registry-image-tags\" ng-if=\"names\"> <dt translate>Tags</dt> <dd><span class=\"registry-image-tag\" ng-repeat=\"name in names\">{{name}}</span>&nbsp;</dd> </dl>";
 ngModule.run(["$templateCache",function(c){c.put("registry-image-widgets/views/image-body.html",v1)}]);
 module.exports=v1;
 
@@ -798,12 +920,34 @@ module.exports=v1;
 var angular=window.angular,ngModule;
 try {ngModule=angular.module(["ng"])}
 catch(e){ngModule=angular.module("ng",[])}
+var v1="<table class=\"listing-ct\"> <thead> <tr> <th class=\"listing-ct-toggle\"></th> <th translate=\"yes\" width=\"20%\">Tag</th> <th translate=\"yes\">From</th> <th translate=\"yes\">Identifier</th> <th translate=\"yes\">Last Updated</th> </tr> </thead> <tbody ng-repeat=\"tag in imagestreamTags(imagestream) | orderBy : 'tag.name'\" ng-if=\"imagestream\" data-id=\"{{ imagestream.metadata.namespace + '/' + imagestream.metadata.name + ':' + tag.name }}\" ng-class=\"{open: imagestreamExpanded(imagestream, tag), last: $last, first: $first}\"> <tr ng-click=\"imagestreamActivate(imagestream, tag, $event)\" class=\"listing-ct-item registry-listing\"> <td ng-click=\"imagestreamToggle(imagestream, tag, $event)\" class=\"listing-ct-toggle\"> <i class=\"fa fa-fw\"></i> </td> <th> <a class=\"registry-image-tag\" ng-href=\"{{ imagestreamPath(imagestream, tag) }}\" title=\"{{tag.name }}\">{{ tag.name }}</a> </th> <td ng-init=\"name = imagestreamTagFromName(imagestream, tag.spec.from)\"> <div ng-if=\"!name || !tag.spec.from\"><em>pushed image</em></div> <div ng-if=\"name\" title=\"{{tag.spec.from.name}}\"> <span ng-if=\"!name[0]\">{{tag.spec.from.name}}</span>\n<span ng-if=\"name[0]\"> <span ng-if=\"name[0] === imagestream.metadata.name\">{{name.qualified}}</span>\n<span ng-if=\"name[0] !== imagestream.metadata.name\"> <a ng-click=\"imagestreamActivate({ metadata: { namespace: tag.spec.from.namespace, name: name[0] }}, name[1], $event)\">{{tag.spec.from.name}}</a> </span> </span> </div> </td> <td class=\"image-identifier\"> <div class=\"row\" ng-init=\"annotations = imagestream.metadata.annotations\"> <div class=\"col col-xs-12\" ng-if=\"!tag.status\"> <div ng-if=\"annotations['openshift.io/image.dockerRepositoryCheck']\"> <span class=\"pficon pficon-warning-triangle-o\" style=\"margin-right: 5px\" ng-attr-title=\"{{annotations['openshift.io/image.dockerRepositoryCheck']}}\"></span>\n<span translate=\"yes\">Unable to resolve</span> </div> <div ng-if=\"!annotations['openshift.io/image.dockerRepositoryCheck']\"> <span ng-if=\"!tag.spec.from\" translate=\"yes\">Not yet synced</span> \n<span ng-if=\"tag.spec.from\" translate=\"yes\">Unresolved</span> </div> </div> <div class=\"col col-xs-12\" ng-if=\"tag.status\"> <span ng-if=\"tag.status.items.length &amp;&amp; tag.status.items[0].image\"> <tt title=\"{{tag.status.items[0].image}}\">{{tag.status.items[0].image}}</tt> </span>\n<span ng-if=\"!tag.status.items.length\"><em translate=\"yes\">none</em></span> </div> </div> </td> <td> <div title=\"{{ tag.items[0].created }}\"> <span ng-if=\"tag.status.items.length &amp;&amp; tag.status.items[0].image\" title=\"{{ tag.items[0].created }}\"> {{ tag.status.items[0].created | dateRelative }} </span> </div> </td> </tr> <tr class=\"listing-ct-panel\" ng-if=\"imagestreamExpanded(imagestream, tag)\" ng-repeat-end=\"\"> <td colspan=\"5\"> <registry-image-panel ng-init=\"tag = tag.status\"></registry-image-panel> </td> </tr> </tbody> <thead class=\"listing-ct-empty\" ng-if=\"!quiet\"> <tr> <td colspan=\"5\" ng-if=\"!failure && !imagestreamTags(imagestream)\" translate=\"yes\">No tags are present.</td> <td colspan=\"5\" ng-if=\"failure\">{{failure}}</td> </tr> </thead> </table>";
+ngModule.run(["$templateCache",function(c){c.put("registry-image-widgets/views/image-listing.html",v1)}]);
+module.exports=v1;
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+var angular=window.angular,ngModule;
+try {ngModule=angular.module(["ng"])}
+catch(e){ngModule=angular.module("ng",[])}
 var v1="<div> <dl class=\"dl-horizontal left\"> <dt ng-if=\"labels\" translate>Labels</dt> <dd ng-repeat=\"(name, value) in labels\" ng-show=\"name != 'description' && name != 'name'\"> <tt>{{name}}={{value}}</tt> </dd> <dt ng-if=\"config.OnBuild.length\" translate>On Build</dt> <dd ng-repeat=\"line in config.OnBuild\"><tt>{{line}}</tt></dd> <registry-annotations annotations=\"image.metadata.annotations\"></registry-annotations> <dt translate>Docker Version</dt> <dd>{{image.dockerImageMetadata.DockerVersion}}</dd> </dl> </div>";
 ngModule.run(["$templateCache",function(c){c.put("registry-image-widgets/views/image-meta.html",v1)}]);
 module.exports=v1;
 
 /***/ }),
-/* 11 */
+/* 12 */
+/***/ (function(module, exports) {
+
+var angular=window.angular,ngModule;
+try {ngModule=angular.module(["ng"])}
+catch(e){ngModule=angular.module("ng",[])}
+var v1="<div> <div class=\"listing-ct-head\"> <div ng-if=\"actions.deleteTag\" class=\"listing-ct-actions\"> <button class=\"btn btn-danger btn-delete pficon pficon-delete\" ng-click=\"actions.deleteTag(imagestream, tag)\"></button> </div> <ul class=\"nav nav-tabs nav-tabs-pf\"> <li ng-class=\"{active: tab('main')}\"> <a ng-click=\"tab('main', $event)\" translate>Image</a> </li> <li ng-class=\"{active: tab('config')}\"> <a ng-click=\"tab('config', $event)\" translate>Container</a> </li> <li ng-class=\"{active: tab('meta')}\"> <a ng-click=\"tab('meta', $event)\" translate>Metadata</a> </li> </ul> </div> <div class=\"listing-ct-body\" ng-show=\"tab('main')\"> <registry-image-body image=\"image\" names=\"names\"> </registry-image-body> <registry-image-pull settings=\"settings\" names=\"names\"> </registry-image-pull> </div> <div class=\"listing-ct-body\" ng-show=\"tab('config')\"> <registry-image-config image=\"image\"> </registry-image-config> </div> <div class=\"listing-ct-body\" ng-if=\"tab('meta')\"> <registry-image-meta image=\"image\"> </registry-image-meta> <registry-image-layers image=\"image\" layers=\"layers\"> </registry-image-layers> </div> </div>";
+ngModule.run(["$templateCache",function(c){c.put("registry-image-widgets/views/image-panel.html",v1)}]);
+module.exports=v1;
+
+/***/ }),
+/* 13 */
 /***/ (function(module, exports) {
 
 var angular=window.angular,ngModule;
@@ -814,7 +958,7 @@ ngModule.run(["$templateCache",function(c){c.put("registry-image-widgets/views/i
 module.exports=v1;
 
 /***/ }),
-/* 12 */
+/* 14 */
 /***/ (function(module, exports) {
 
 var angular=window.angular,ngModule;
@@ -825,18 +969,18 @@ ngModule.run(["$templateCache",function(c){c.put("registry-image-widgets/views/i
 module.exports=v1;
 
 /***/ }),
-/* 13 */
+/* 15 */
 /***/ (function(module, exports) {
 
 var angular=window.angular,ngModule;
 try {ngModule=angular.module(["ng"])}
 catch(e){ngModule=angular.module("ng",[])}
-var v1="<table class=\"listing-ct\"> <thead> <tr> <th class=\"listing-ct-toggle\"></th> <th translate=\"yes\" width=\"20%\">Tag</th> <th translate=\"yes\">Identifier</th> <th translate=\"yes\">From</th> <th translate=\"yes\">Last Updated</th> </tr> </thead> <tbody ng-repeat-start=\"(link, stream) in (imagestreams || { 'one': imagestream }) track by link\" ng-if=\"imagestreams\" data-id=\"{{ stream.metadata.namespace + '/' + stream.metadata.name }}\" class=\"active\" ng-class=\"{open: imagestreamExpanded(imagestream)}\"> <tr ng-click=\"imagestreamActivate(imagestream, null, $event)\" class=\"listing-ct-item imagestream-item\"> <td ng-click=\"imagestreamToggle(imagestream, null, $event)\" class=\"listing-ct-toggle\"> <i class=\"fa fa-fw\"></i> </td> <th colspan=\"4\"> {{ stream.metadata.namespace + '/' + stream.metadata.name }} <div ng-repeat=\"statustags in stream.status.tags\"> <span ng-repeat=\"condition in statustags.conditions\" ng-if=\"condition.type == 'ImportSuccess' &amp;&amp; condition.status == 'False'\" class=\"pficon pficon-warning-triangle-o\"></span> </div> </th> </tr> <tr class=\"listing-ct-panel\" ng-if=\"imagestreamExpanded(imagestream)\"> <td colspan=\"4\"> <registry-imagestream-panel></registry-imagestream-panel> </td> </tr> </tbody> <tbody ng-repeat=\"tag in imagestreamTags(stream) | orderBy : 'tag.name'\" data-id=\"{{ stream.metadata.namespace + '/' + stream.metadata.name + ':' + tag.name }}\" ng-class=\"{open: imagestreamExpanded(stream, tag), last: $last, first: $first}\"> <tr ng-click=\"imagestreamActivate(stream, tag, $event)\" class=\"listing-ct-item registry-listing\"> <td ng-click=\"imagestreamToggle(stream, tag, $event)\" class=\"listing-ct-toggle\"> <i class=\"fa fa-fw\"></i> </td> <td> <a class=\"registry-image-tag\" ng-href=\"{{ imagestreamPath(stream, tag) }}\" title=\"{{tag.name }}\">{{ tag.name }}</a> </td> <td class=\"image-identifier\"> <div class=\"row\" ng-init=\"annotations = stream.metadata.annotations\"> <div class=\"col col-xs-12\" ng-if=\"!tag.status\"> <div ng-if=\"annotations['openshift.io/image.dockerRepositoryCheck']\"> <span class=\"pficon pficon-warning-triangle-o\" style=\"margin-right: 5px\" ng-attr-title=\"{{annotations['openshift.io/image.dockerRepositoryCheck']}}\"></span>\n<span translate=\"yes\">Unable to resolve</span> </div> <div ng-if=\"!annotations['openshift.io/image.dockerRepositoryCheck']\"> <span ng-if=\"!tag.spec.from\" translate=\"yes\">Not yet synced</span> \n<span ng-if=\"tag.spec.from\" translate=\"yes\">Unresolved</span> </div> </div> <div class=\"col col-xs-12\" ng-if=\"tag.status\"> <span ng-if=\"tag.status.items.length &amp;&amp; tag.status.items[0].image\"> <tt title=\"{{tag.status.items[0].image}}\">{{tag.status.items[0].image}}</tt> </span>\n<span ng-if=\"!tag.status.items.length\"><em translate=\"yes\">none</em></span> </div> </div> </td> <td ng-init=\"name = imagestreamTagFromName(stream, tag.spec.from)\"> <div ng-if=\"!name || !tag.spec.from\"><em>pushed image</em></div> <div ng-if=\"name\" title=\"{{tag.spec.from.name}}\"> <span ng-if=\"!name[0]\">{{tag.spec.from.name}}</span>\n<span ng-if=\"name[0]\"> <span ng-if=\"name[0] === stream.metadata.name\">{{name.qualified}}</span>\n<span ng-if=\"name[0] !== stream.metadata.name\"> <a ng-href=\"imagestreamPath({ metadata: { namespace: tag.spec.from.namespace, name: name[0] }})\"><span ng-if=\"tag.spec.from.namespace &amp;&amp; tag.spec.from.namespace !== imageStream.metadata.namespace\">{{tag.spec.from.namespace}}/</span>{{tag.spec.from._imageStreamName}}</a>{{name.delimiter}}{{name[1]}} </span> </span> </div> </td> <td> <div title=\"{{ tag.items[0].created }}\"> <span ng-if=\"tag.status.items.length &amp;&amp; tag.status.items[0].image\" title=\"{{ tag.items[0].created }}\"> {{ tag.status.items[0].created | dateRelative }} </span> </div> </td> </tr> <tr class=\"listing-ct-panel\" ng-if=\"imagestreamExpanded(stream, tag)\" ng-repeat-end=\"\"> <td colspan=\"4\"> <registry-image-panel></registry-image-panel> </td> </tr> </tbody> <tbody data-ng-rubbish=\"\" ng-if=\"0\" ng-repeat-end=\"1\"> </tbody> <thead class=\"listing-ct-empty\" ng-if=\"!quiet\"> <tr> <td colspan=\"4\" ng-if=\"!failure && imagestreams\" translate=\"yes\">No image streams are present.</td> <td colspan=\"4\" ng-if=\"!failure && !imagestreams\" translate=\"yes\">No tags are present.</td> <td colspan=\"4\" ng-if=\"failure\">{{failure}}</td> </tr> </thead> </table>";
+var v1="<table class=\"listing-ct\"> <thead> <tr> <th class=\"listing-ct-toggle\"></th> <th translate=\"yes\" width=\"20%\">Name</th> <th translate=\"yes\">Tags</th> <th translate=\"yes\">Repository</th> </tr> </thead> <tbody ng-repeat=\"(link, imagestream) in imagestreams track by link | orderBy : 'link'\" ng-if=\"imagestreams\" data-id=\"{{ imagestream.metadata.namespace + '/' + imagestream.metadata.name }}\" class=\"active\" ng-class=\"{open: imagestreamExpanded(imagestream)}\"> <tr ng-click=\"imagestreamActivate(imagestream, null, $event)\" class=\"listing-ct-item imagestream-item\"> <td ng-click=\"imagestreamToggle(imagestream, null, $event)\" class=\"listing-ct-toggle\"> <i class=\"fa fa-fw\"></i> </td> <th> {{ imagestream.metadata.namespace + '/' + imagestream.metadata.name }} <div ng-repeat=\"statustags in imagestream.status.tags\"> <span ng-repeat=\"condition in statustags.conditions\" ng-if=\"condition.type == 'ImportSuccess' &amp;&amp; condition.status == 'False'\" class=\"pficon pficon-warning-triangle-o\"></span> </div> </th> <td ng-init=\"tag_count = imagestreamTags(imagestream).length\"> <a ng-repeat=\"tag in imagestreamTags(imagestream) | orderBy : 'tag.name' | limitTo: 4\" class=\"registry-image-tag\" ng-click=\"imagestreamActivate(imagestream, tag, $event)\" title=\"{{tag.name }}\">{{ tag.name }}</a>\n<span ng-if=\"tag_count > 4\" translate-n=\"tag_count - 4\" translate translate-plural=\"and {{ $count }} others\">and {{ $count }} other</span> </td> <td> <span ng-if=\"!imageStream.status.dockerImageRepository && !imageStream.spec.dockerImageRepository\"><em>unknown</em></span>\n<span ng-if=\"imageStream.status.dockerImageRepository || imageStream.spec.dockerImageRepository\">{{imageStream.status.dockerImageRepository || imageStream.spec.dockerImageRepository}}</span> </td> </tr> <tr class=\"listing-ct-panel\" ng-if=\"imagestreamExpanded(imagestream)\"> <td colspan=\"4\"> <registry-imagestream-panel></registry-imagestream-panel> </td> </tr> </tbody> <thead class=\"listing-ct-empty\" ng-if=\"!quiet\"> <tr> <td colspan=\"4\" ng-if=\"!failure && !imagestreams\" translate=\"yes\">No image streams are present.</td> <td colspan=\"4\" ng-if=\"failure\">{{failure}}</td> </tr> </thead> </table>";
 ngModule.run(["$templateCache",function(c){c.put("registry-image-widgets/views/imagestream-listing.html",v1)}]);
 module.exports=v1;
 
 /***/ }),
-/* 14 */
+/* 16 */
 /***/ (function(module, exports) {
 
 var angular=window.angular,ngModule;
@@ -847,7 +991,18 @@ ngModule.run(["$templateCache",function(c){c.put("registry-image-widgets/views/i
 module.exports=v1;
 
 /***/ }),
-/* 15 */
+/* 17 */
+/***/ (function(module, exports) {
+
+var angular=window.angular,ngModule;
+try {ngModule=angular.module(["ng"])}
+catch(e){ngModule=angular.module("ng",[])}
+var v1="<div> <div class=\"listing-ct-head\"> <div ng-if=\"actions\" class=\"listing-ct-actions\"> <button class=\"btn btn-danger btn-delete pficon pficon-delete\" ng-if=\"actions.deleteImageStream\" ng-click=\"actions.deleteImageStream(imagestream)\"></button>\n<button class=\"btn btn-default pficon pficon-edit\" ng-if=\"actions.modifyImageStream\" ng-click=\"actions.modifyImageStream(imagestream)\"></button> </div> <ul class=\"nav nav-tabs nav-tabs-pf\"> <li ng-class=\"{active: tab('main')}\"><a ng-click=\"tab('main', $event)\">Image stream</a></li> <li ng-class=\"{active: tab('meta')}\" ng-if=\"imagestream.metadata.annotations\"> <a ng-click=\"tab('meta', $event)\">Metadata</a></li> <li ng-class=\"{active: tab('tags')}\"> <a ng-click=\"tab('tags', $event)\">Tags</a></li> </ul> </div> <div class=\"listing-ct-body\" ng-show=\"tab('main')\"> <registry-imagestream-body imagestream=\"imagestream\" imagestream-modify=\"actions.modifyImageStream\" project-modify=\"actions.modifyProject\" project-sharing=\"sharedImages\"> </registry-imagestream-body> <registry-imagestream-push imagestream=\"imagestream\" settings=\"settings\"> </registry-imagestream-push> </div> <div class=\"listing-ct-body\" ng-if=\"tab('meta')\" ng-if=\"imagestream.metadata.annotations\"> <registry-imagestream-meta imagestream=\"imagestream\"> </registry-imagestream-meta> </div> <div class=\"listing-ct-body\" ng-if=\"tab('tags')\"> <div class=\"inline-tabs\"> <registry-image-listing imagestream=\"imagestream\" image-by-tag=\"imageByTag\" settings=\"settings\" shared-images=\"sharedImages\" actions=\"actions\" image-tag-names=\"imageTagNames\"> </registry-image-listing> </div> </div> </div>";
+ngModule.run(["$templateCache",function(c){c.put("registry-image-widgets/views/imagestream-panel.html",v1)}]);
+module.exports=v1;
+
+/***/ }),
+/* 18 */
 /***/ (function(module, exports) {
 
 var angular=window.angular,ngModule;
@@ -858,7 +1013,7 @@ ngModule.run(["$templateCache",function(c){c.put("registry-image-widgets/views/i
 module.exports=v1;
 
 /***/ }),
-/* 16 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(4);
@@ -870,13 +1025,16 @@ __webpack_require__(1);
 __webpack_require__(6);
 __webpack_require__(7);
 __webpack_require__(8);
-__webpack_require__(10);
-__webpack_require__(9);
 __webpack_require__(11);
+__webpack_require__(9);
 __webpack_require__(12);
 __webpack_require__(13);
+__webpack_require__(10);
 __webpack_require__(14);
-module.exports = __webpack_require__(15);
+__webpack_require__(15);
+__webpack_require__(16);
+__webpack_require__(17);
+module.exports = __webpack_require__(18);
 
 
 /***/ })
