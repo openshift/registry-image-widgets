@@ -30,10 +30,14 @@ a.registry-image-tag {
     text-decoration: none;
     max-width: 76px;
     height: 22px;
-    display: block;
+    display: inline;
     text-align: center;
-    padding: 0 2px;
+    padding: 0 5px;
     margin-left: 2px;
+    font-weight: normal;
+    -webkit-border-radius: 3;
+    -moz-border-radius: 3;
+    border-radius: 3px;
 }
 
 @media (max-width: @screen-sm-min) {
@@ -86,7 +90,8 @@ registry-imagestream-push {
  * Imagestream listing styles
  */
 
-registry-imagestream-listing table {
+registry-imagestream-listing table.listing-ct,
+registry-image-listing table.listing-ct {
     max-width: 2000px;
     min-width: 85%;
 
@@ -96,7 +101,7 @@ registry-imagestream-listing table {
 
     td.image-identifier {
         max-width: 0;
-        width: 50%;
+
         div.col {
             max-width: 250px;
             text-overflow: ellipsis;
@@ -134,5 +139,44 @@ registry-imagestream-listing table {
             font-size: 14px;
             padding-bottom: 5px;
         }
+    }
+
+    .inline-tabs {
+        width: 100%;
+        max-height: 400px;
+        overflow: auto;
+    }
+
+    .inline-tabs table {
+        margin-top: 0;
+        width: 100%;
+    }
+
+    .inline-tabs tr.listing-ct-item {
+        background-color: unset;
+        border-bottom:1px solid #eeeeee;
+        border-top:none;
+        border-right:none;
+        border-left:none;
+    }
+
+    tbody {
+        border-right: 1px solid #eeeeee;
+        border-left: 1px solid #eeeeee;
+    }
+
+    tbody tr.listing-ct-item td,
+    tbody tr.listing-ct-item th, {
+        border: none;
+    }
+
+    registry-image-listing .listing-ct-toggle {
+        display: none;
+    }
+}
+
+registry-image-listing {
+    a.registry-image-tag {
+        display: block;
     }
 }

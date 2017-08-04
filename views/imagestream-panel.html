@@ -1,0 +1,38 @@
+<div>
+    <div class="listing-ct-head">
+        <div ng-if="actions" class="listing-ct-actions">
+            <button class="btn btn-danger btn-delete pficon pficon-delete"
+                ng-if="actions.deleteImageStream"
+                ng-click="actions.deleteImageStream(imagestream)"></button>
+            <button class="btn btn-default pficon pficon-edit"
+                ng-if="actions.modifyImageStream"
+                ng-click="actions.modifyImageStream(imagestream)"></button>
+        </div>
+        <ul class="nav nav-tabs nav-tabs-pf">
+            <li ng-class="{active: tab('main')}"><a ng-click="tab('main', $event)" translate>Image stream</a></li>
+            <li ng-class="{active: tab('meta')}" ng-if="imagestream.metadata.annotations">
+                <a ng-click="tab('meta', $event)" translate>Metadata</a></li>
+            <li ng-class="{active: tab('tags')}">
+                <a ng-click="tab('tags', $event)" translate>Tags</a></li>
+        </ul>
+    </div>
+    <div class="listing-ct-body" ng-show="tab('main')">
+        <registry-imagestream-body imagestream="imagestream" imagestream-modify="actions.modifyImageStream"
+            project-modify="actions.modifyProject" project-sharing="sharedImages">
+        </registry-imagestream-body>
+        <registry-imagestream-push imagestream="imagestream" settings="settings">
+        </registry-imagestream-push>
+    </div>
+    <div class="listing-ct-body" ng-if="tab('meta')" ng-if="imagestream.metadata.annotations">
+        <registry-imagestream-meta imagestream="imagestream">
+        </registry-imagestream-meta>
+    </div>
+    <div class="listing-ct-body" ng-if="tab('tags')">
+        <div class="inline-tabs">
+            <registry-image-listing imagestream="imagestream" image-by-tag="imageByTag"
+                                    settings="settings" shared-images="sharedImages"
+                                    actions="actions" image-tag-names="imageTagNames">
+            </registry-image-listing>
+        </div>
+    </div>
+</div>
