@@ -40,7 +40,7 @@
     </tbody>
     <thead class="listing-ct-empty" ng-if="!quiet">
         <tr>
-            <td colspan="4" ng-if="!failure && !imagestreams" translate="yes">No image streams are present.</td>
+            <td colspan="4" ng-if="!failure && (!imagestreams || !imagestreams.length)" translate="yes">No image streams are present.</td>
             <td colspan="4" ng-if="failure">{{failure}}</td>
         </tr>
     </thead>

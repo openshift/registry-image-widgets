@@ -70,7 +70,7 @@
     </tbody>
     <thead class="listing-ct-empty" ng-if="!quiet">
         <tr>
-            <td colspan="5" ng-if="!failure && !imagestreamTags(imagestream)" translate="yes">No tags are present.</td>
+            <td colspan="5" ng-if="!failure && !imagestreamTags(imagestream).length" translate="yes">No tags are present.</td>
             <td colspan="5" ng-if="failure">{{failure}}</td>
         </tr>
     </thead>
