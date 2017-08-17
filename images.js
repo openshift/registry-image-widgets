@@ -379,7 +379,8 @@ angular.module('registryUI.images', [
                 actions: '=',
                 imageByTagFunc: '&imageByTag',
                 imageTagNamesFunc: '&imageTagNames',
-                sharedImagesFunc: '&sharedImages'
+                sharedImagesFunc: '&sharedImages',
+                classNames: '@'
             },
             templateUrl: 'registry-image-widgets/views/imagestream-listing.html',
             link: imageListingFunc
