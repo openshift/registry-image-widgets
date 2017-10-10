@@ -36,6 +36,8 @@
     <dd ng-if-end><tt>{{imagestream.spec.dockerImageRepository}}</tt></dd>
     <dt>Pulling repository</dt>
     <dd><tt>{{imagestream.status.dockerImageRepository}}</tt></dd>
+    <dt ng-if-start="imagestream.status.publicDockerImageRepository">Public pulling repo</dt>
+    <dd ng-if-end><tt>{{imagestream.status.publicDockerImageRepository}}</tt></dd>
     <dt translate>Image count</dt>
     <dd ng-if="imagestream.status.tags.length">{{imagestream.status.tags.length}}</dd>
     <dd ng-if="!imagestream.status.tags.length">0</dd>
